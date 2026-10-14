@@ -1,6 +1,6 @@
-# TradeScan — demo portal
+# Tradeplace — demo portal
 
-Static, single-page sales demo of the TradeScan vendor-recovery portal. No backend,
+Static, single-page sales demo of the Tradeplace vendor-recovery portal. No backend,
 no build step, no dependencies. Three files do the whole thing:
 
 ```
@@ -39,7 +39,7 @@ Table names, column headers, tab labels, status wordings, button captions and di
 copy are kept identical to production so a client sees the system they'd be buying.
 The **layout** is deliberately not the production one:
 
-| Production | TradeScan |
+| Production | Tradeplace |
 | --- | --- |
 | Dark navy sidebar | Light rail, left accent bar marks the active item |
 | Navy page banner | Sticky header with breadcrumb, title and vendor pill inline |

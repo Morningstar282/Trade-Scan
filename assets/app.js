@@ -1,4 +1,4 @@
-/* TradeScan demo portal.
+/* Tradeplace demo portal.
    Same modules, same table names, same column headers and wordings as the
    production portal it was specced from. The LAYOUT is deliberately different:
    summary strip instead of stat cards, segmented controls instead of tabs,
@@ -777,7 +777,7 @@ function pCustomer() {
     '<button class="btn" data-modal="signals">Access Signals</button><button class="btn" data-modal="nojobs">Jobs Not Submitted from Last 90 Days</button>' + ftoggle('cd') + BEXP,
     fpanel('cd', [{l:'Country', o:['Select Country', 'US', 'UK', 'DE']}, {l:'Has Contract', o:['Has Contract', 'Yes', 'No']},
       {l:'Referral Agency', o:['Select Referral Agency', 'Partner', 'Direct']}], '<button class="btn p">Search</button><button class="btn">Reset</button>') +
-    tw('<thead>' + th(['Sr No.', 'Country', 'Organization Name', 'VC Name', 'VC Access', 'Onboard Date', 'TradeScan Fee', 'Payment Terms', 'Referral Agency Name', 'Referral Agency 1 Commission', 'Has Contract', 'Overbilling Recoupment', 'Overbilling Identified', 'Potential Recoup', 'Completion', 'Recovered', 'Pending With Amazon', 'Prior Adjusments', 'Denied Amount'], [0, 12, 13, 15, 16, 17, 18]) + '</thead><tbody>' +
+    tw('<thead>' + th(['Sr No.', 'Country', 'Organization Name', 'VC Name', 'VC Access', 'Onboard Date', 'Tradeplace Fee', 'Payment Terms', 'Referral Agency Name', 'Referral Agency 1 Commission', 'Has Contract', 'Overbilling Recoupment', 'Overbilling Identified', 'Potential Recoup', 'Completion', 'Recovered', 'Pending With Amazon', 'Prior Adjusments', 'Denied Amount'], [0, 12, 13, 15, 16, 17, 18]) + '</thead><tbody>' +
       CUST.map(function (r) {
         function m(v) { return typeof v === 'number' ? D(v) : esc(v); }
         return '<tr><td class="num">' + r[0] + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td>' + esc(r[3]) + '</td><td class="mono">' + esc(r[4]) + '</td>' +
