@@ -407,6 +407,35 @@ function bars(el, rows, fmt) {
     return '<div class="brow"><div class="l" title="' + esc(r[0]) + '">' + esc(r[0]) + '</div><div class="bt"><div class="bf" style="width:' + (r[1] / mx * 100).toFixed(1) + '%"></div></div><div class="bv">' + (fmt ? fmt(r[1]) : D(r[1])) + '</div></div>';
   }).join('') + '</div>';
 }
+/* Win rate per coop sub-type, derived from the dispute register rather than
+   hardcoded, so the two can never drift apart. */
+function winSplit() {
+  var by = {};
+  DISPUTES.forEach(function (r) {
+    var reason = r[8], refunded = Number(r[3]) > 0;
+    by[reason] = by[reason] || { won: 0, total: 0 };
+    by[reason].total++;
+    if (refunded) by[reason].won++;
+  });
+  return by;
+}
+function winbars(el, order) {
+  if (!el) return;
+  var by = winSplit(), won = 0, total = 0;
+  Object.keys(by).forEach(function (k) { won += by[k].won; total += by[k].total; });
+  var pct = total ? (won / total * 100) : 0;
+  var rows = order.map(function (name) {
+    var s = by[name] || { won: 0, total: 0 };
+    var p = s.total ? (s.won / s.total * 100) : null;
+    var col = p === null ? 'var(--line)' : p >= 50 ? 'var(--tp-green)' : p > 0 ? 'var(--tp-yellow)' : 'var(--tp-red)';
+    return '<div class="wrow"><div class="wl">' + esc(name) +
+      '<span>' + (s.total ? s.won + ' of ' + s.total + ' refunded' : 'No disputes raised') + '</span></div>' +
+      '<div class="wt"><div class="wf" style="width:' + (p === null ? 0 : p).toFixed(1) + '%;background:' + col + '"></div></div>' +
+      '<div class="wv' + (p === null ? ' none' : '') + '">' + (p === null ? '\u2014' : p.toFixed(1) + '%') + '</div></div>';
+  }).join('');
+  el.innerHTML = '<div class="wtot"><b>' + pct.toFixed(1) + '%</b><span>' + won + ' of ' + total +
+    ' coop disputes refunded</span></div>' + rows;
+}
 function donut(el, p, sub) {
   if (!el) return;
   var R = 44, C = 2 * Math.PI * R;
@@ -449,7 +478,7 @@ function pDashboard() {
         ['Shipped but not invoiced', D(35579.56)], ['Claim Submitted', D(18204.11)],
         ['Recouped Amount', D(18204.11)], ['Recouped Rate', '51.17%']]) + '</div>') +
       panel('Excess Coop', '<button class="btn" data-go="coop">Open ›</button>', '<div class="pb">' + kvs([
-        ['Win Rate', '0.00%'], ['Findings', D(7807.24)], ['Disputed', D(296823.98)], ['Recouped', D(0)],
+        ['Win Rate', '50.0%'], ['Findings', D(7807.24)], ['Disputed', D(296823.98)], ['Recouped', D(3617.50)],
         ['Yearly 2026', SD(-28049.86)], ['Yearly 2025', D(425897.41)], ['Yearly 2024', SD(-390033.96)]]) + '</div>') +
       panel('P&L Analysis', '<button class="btn" data-go="pnl">Open ›</button>', '<div class="pb">' + kvs([
         ['EBITDA %', '8.77%'], ['EBITDA $', D(442037.98)], ['CoOp', D(1807977.38)], ['AMS', '-'],
@@ -618,16 +647,16 @@ function pCoop() {
     {k:'Finding Amount', v:D(7807.24), s:'Shipment Disparity, net of adjustments'},
     {k:'Yearly Trends', v:SD(-28049.86), c:'r', s:'2026 · <span class="xl" data-modal="yoy">View Details ›</span>'},
     {k:'Disputed Amount', v:D(296823.98), s:'<span class="xl" data-go="coopd">View Details ›</span>'},
-    {k:'Recouped Amount', v:D(0), s:'Export Remittance available'},
-    {k:'Win Rate', v:'0.00%', bar:0, s:'No disputes resolved yet'}
+    {k:'Recouped Amount', v:D(3617.50), c:'g', s:'Export Remittance available'},
+    {k:'Win Rate', v:'50.0%', bar:50, s:'6 of 12 coop disputes refunded'}
   ]) +
   work(
     '<div class="grid2">' +
     panel('Finding Amount', '<button class="btn" data-modal="yoy">YOY Split</button>', '<div class="pb"><div class="chart" id="cS"></div>' +
       kvs([['2026', SD(-28049.86)], ['2025', D(425897.41)], ['2024', SD(-390033.96)], ['2023', SD(-6.35)]]) + '</div>') +
     panel('Recouped Amount', '<button class="btn">Export Remittance ' + A_DL + '</button>', '<div class="pb">' +
-      '<div style="font-family:var(--m);font-size:24px;font-weight:600">' + D(0) + '</div>' +
-      '<div style="font-size:11.5px;color:var(--ink-3);margin-top:4px">Nothing remitted in the current window.</div>' +
+      '<div style="font-family:var(--fh);font-size:26px;font-weight:700">' + D(3617.50) + '</div>' +
+      '<div style="font-size:14px;color:var(--ink-3);margin-top:4px">Across 6 refunded disputes.</div>' +
       kvs([['Disputed Amount', D(296823.98)], ['Prior Adjustment', D(1463.44)], ['Net Off', D(7807.24)]]) + '</div>') +
     '</div>' +
     panel('Granular Analysis', '<button class="btn s">P.A Export</button>',
@@ -641,7 +670,7 @@ function pCoop() {
       '<div class="pb"><div style="font-size:11.5px;color:var(--ink-3);margin-bottom:8px">07/01/23 to 07/31/26</div>' +
       kvs([['<span class="xl" data-go="result">Agreements Scanned</span>', '19', null, true], ['CoOp Invoices Scanned', '192'],
         ["PO's Scanned", '147,022'], ['Sum Identified', FILT.coopsub === 'Shipment Disparity' ? D(9270.68) : D(0)]]) +
-      '<div style="font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:14px 0 6px">Win Rate</div><div id="cW"></div></div>') +
+      '<div style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin:16px 0 8px">Win Rate by sub-type</div><div id="cW"></div></div>') +
     panel('Jobs in Progress', BIMP + BEXP,
       tw('<thead>' + th(['Vendor Name', 'Date', 'Type', 'Agreement Id', 'Stage', 'Pending Task', 'Progress', 'Action']) + '</thead><tbody>' +
         LIVE.jobs.map(function (j, i) {
@@ -884,7 +913,7 @@ function draw(id) {
   if (id === 'dashboard') donut($('dP'), 100, 'Approved');
   if (id === 'coop') {
     spark($('cS'), SPARK);
-    bars($('cW'), [['Shipment Disparity', 0], ['Duplicate Billing', 0], ['Duplicate Freight', 0], ['Non-Compliant Freight', 0], ['Non Compliant Fee', 0]], function () { return 'No Finding'; });
+    winbars($('cW'), ['Shipment Disparity', 'Duplicate Freight', 'Non-compliant Freight', 'Duplicate Billing', 'Non Compliant Fee']);
     bars($('cB'), COOP_SUB.map(function (r) { return [r[0], r[1]]; }));
   }
   if (id === 'pnl') {
