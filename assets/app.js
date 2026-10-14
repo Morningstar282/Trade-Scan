@@ -190,14 +190,14 @@ var DISPUTES = [['Demo Account 1','DSPT11391985759',296823.98,0,'0.0%','Demo Use
  ['Demo Account 11','DSPT11469779039',869.78,0,'0.0%','Demo User 2','07/31/26','-','Shipment Disparity','-','RESOLVED'],
  ['Demo Account 2','DSPT11268445279',1274.24,0,'0.0%','Demo User 1','07/30/26','-','Shipment Disparity','-','RESOLVED']];
 
-var CUST = [[1,'US','Demo Account 1','Demo Account 1','vcbot@tradescan.io','03/27/25','12.5%','Net 30','-','-','No','1.84%',7807.24,296823.98,'3801.91%',7807.24,0,1463.44,296823.98],
- [2,'US','Demo Account 2','Demo Account 2','vcbot@tradescan.io','04/02/25','15.0%','Net 30','Partner','20%','Yes','2.43%',5659.78,6656.00,'117.6%',5659.78,6111.55,0,248.64],
- [3,'US','Demo Account 3','Demo Account 3','vcbot@tradescan.io','04/02/25','15.0%','Net 30','Partner','20%','Yes','1.71%',7768.95,9976.86,'128.42%',7768.95,9913.52,0,167.91],
- [4,'US','Demo Account 4','Demo Account 4','vcbot@tradescan.io','05/18/25','12.5%','Net 45','-','-','Yes','1.07%',3142.84,6745.77,'214.64%',3142.84,4667.78,0,2158.73],
- [5,'US','Demo Account 5','Demo Account 5','vcbot@tradescan.io','06/09/25','12.5%','Net 30','-','-','Yes','0.95%',15219.96,15665.48,'100.92%',15219.96,1463.55,0,13502.08],
- [6,'US','Demo Account 6','Demo Account 6','vcbot@tradescan.io','07/14/25','15.0%','Net 30','Partner','20%','Yes','1.32%',3264.31,8636.63,'264.58%',3264.31,1546.01,0,7090.62],
- [7,'US','Demo Account 7','Demo Account 7','vcbot@tradescan.io','08/01/25','12.5%','Net 30','-','-','Yes','1.03%',989.45,1401.15,'141.61%',989.45,599.29,0,801.85],
- [8,'US','Demo Account 8','Demo Account 8','vcbot@tradescan.io','09/22/25','12.5%','Net 45','-','-','No','-','-','-','-','-','-','-','-']];
+var CUST = [[1,'US','Demo Account 1','Demo Account 1','vcbot@tradeplace.com','03/27/25','12.5%','Net 30','-','-','No','1.84%',7807.24,296823.98,'3801.91%',7807.24,0,1463.44,296823.98],
+ [2,'US','Demo Account 2','Demo Account 2','vcbot@tradeplace.com','04/02/25','15.0%','Net 30','Partner','20%','Yes','2.43%',5659.78,6656.00,'117.6%',5659.78,6111.55,0,248.64],
+ [3,'US','Demo Account 3','Demo Account 3','vcbot@tradeplace.com','04/02/25','15.0%','Net 30','Partner','20%','Yes','1.71%',7768.95,9976.86,'128.42%',7768.95,9913.52,0,167.91],
+ [4,'US','Demo Account 4','Demo Account 4','vcbot@tradeplace.com','05/18/25','12.5%','Net 45','-','-','Yes','1.07%',3142.84,6745.77,'214.64%',3142.84,4667.78,0,2158.73],
+ [5,'US','Demo Account 5','Demo Account 5','vcbot@tradeplace.com','06/09/25','12.5%','Net 30','-','-','Yes','0.95%',15219.96,15665.48,'100.92%',15219.96,1463.55,0,13502.08],
+ [6,'US','Demo Account 6','Demo Account 6','vcbot@tradeplace.com','07/14/25','15.0%','Net 30','Partner','20%','Yes','1.32%',3264.31,8636.63,'264.58%',3264.31,1546.01,0,7090.62],
+ [7,'US','Demo Account 7','Demo Account 7','vcbot@tradeplace.com','08/01/25','12.5%','Net 30','-','-','Yes','1.03%',989.45,1401.15,'141.61%',989.45,599.29,0,801.85],
+ [8,'US','Demo Account 8','Demo Account 8','vcbot@tradeplace.com','09/22/25','12.5%','Net 45','-','-','No','-','-','-','-','-','-','-','-']];
 
 var ONB = {
  'Onboarded In Last 30 Days':[['Demo Account 8','Demo Account 8','VC-0008','09/22/25','Yes','Completed'],
@@ -227,11 +227,11 @@ var CLIENTS = [[1,'US','Demo Account 1','VC-0001','Yes','Yes','Yes','Yes'],
  [5,'US','Demo Account 5','VC-0005','No','Yes','Yes','No'],
  [6,'US','Demo Account 6','VC-0006','Yes','No','No','No'],
  [7,'US','Demo Account 8','VC-0008','No','No','No','No']];
-var USERS = [['demo.admin@tradescan.io','Administrator','All','All (7)','Today, 09:14','Active'],
- ['demo.ops@tradescan.io','Operations Lead','All','All (7)','Today, 08:40','Active'],
- ['demo.analyst@tradescan.io','Analyst','Demo Account 1','3 assigned','Yesterday, 17:22','Active'],
+var USERS = [['demo.admin@tradeplace.com','Administrator','All','All (7)','Today, 09:14','Active'],
+ ['demo.ops@tradeplace.com','Operations Lead','All','All (7)','Today, 08:40','Active'],
+ ['demo.analyst@tradeplace.com','Analyst','Demo Account 1','3 assigned','Yesterday, 17:22','Active'],
  ['finance@demoaccount1.example','Client (external)','Demo Account 1','Own only','2 days ago','Active'],
- ['demo.audit@tradescan.io','Read only','Demo Account 1','1 assigned','18 days ago','Expired']];
+ ['demo.audit@tradeplace.com','Read only','Demo Account 1','1 assigned','18 days ago','Expired']];
 var GROUPS = [['Finance — full',4,'All (11)','All (7)','01/12/26','Active'],['Analyst — US',3,'8 of 11','3 assigned','02/04/26','Active'],
  ['Client read-only',6,'4 of 11','Own only','01/12/26','Active'],['External audit',1,'2 of 11','1 assigned','09/25/26','Time-limited']];
 
