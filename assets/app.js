@@ -226,7 +226,8 @@ var CLIENTS = [[1,'US','Demo Account 1','VC-0001','Yes','Yes','Yes','Yes'],
  [4,'US','Demo Account 4','VC-0004','Yes','Yes','No','No'],
  [5,'US','Demo Account 5','VC-0005','No','Yes','Yes','No'],
  [6,'US','Demo Account 6','VC-0006','Yes','No','No','No'],
- [7,'US','Demo Account 8','VC-0008','No','No','No','No']];
+ [7,'US','Demo Account 7','VC-0007','Yes','No','Yes','No'],
+ [8,'US','Demo Account 8','VC-0008','No','No','No','No']];
 var USERS = [['demo.admin@tradeplace.com','Administrator','All','All (7)','Today, 09:14','Active'],
  ['demo.ops@tradeplace.com','Operations Lead','All','All (7)','Today, 08:40','Active'],
  ['demo.analyst@tradeplace.com','Analyst','Demo Account 1','3 assigned','Yesterday, 17:22','Active'],
