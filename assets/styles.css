@@ -218,11 +218,11 @@ td.strong{font-weight:600}
 .act button.del{color:var(--tp-red)}
 .act button.del:hover{color:var(--tp-red);background:var(--tp-red-13)}
 
-.meter{display:flex;align-items:center;gap:9px;min-width:160px}
-.meter .l{font-size:11.5px;color:var(--ink-3);white-space:nowrap}
-.mt{flex:1;height:6px;background:var(--line-2);border-radius:999px;overflow:hidden;min-width:48px}
-.mf{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-3));border-radius:999px}
-.mv{font-family:var(--m);font-size:11.5px;font-weight:600;color:var(--brand)}
+/* Win rate reads as a gauge inside the summary strip, not as a bar crammed
+   into a panel header beside the buttons. */
+.strip .gt{height:7px;background:var(--line-2);border-radius:999px;overflow:hidden;margin-top:9px;max-width:190px}
+.strip .gf{height:100%;background:var(--tp-green);border-radius:999px}
+.strip > div.rate .v{color:var(--good)}
 
 .chart svg{display:block;width:100%;height:auto;overflow:visible}
 .chart{position:relative}

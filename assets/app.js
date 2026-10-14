@@ -293,8 +293,10 @@ var LIVE = {bdown:BDOWN0.slice(), jobs:JOBS.slice(), coopd:COOPD0.slice()};
    ========================================================================= */
 function strip(items) {
   return '<div class="strip">' + items.map(function (it) {
-    return '<div><div class="k">' + (it.dot ? '<span class="dotm" style="background:' + it.dot + '"></span>' : '') + esc(it.k) + '</div>' +
+    return '<div' + (it.bar != null ? ' class="rate"' : '') + '><div class="k">' +
+      (it.dot ? '<span class="dotm" style="background:' + it.dot + '"></span>' : '') + esc(it.k) + '</div>' +
       '<div class="v ' + (it.c || '') + '">' + it.v + '</div>' +
+      (it.bar != null ? '<div class="gt"><div class="gf" style="width:' + Math.max(0, Math.min(100, it.bar)).toFixed(1) + '%"></div></div>' : '') +
       (it.s ? '<div class="s">' + it.s + '</div>' : '') + '</div>';
   }).join('') + '</div>';
 }
@@ -342,7 +344,6 @@ function tf(from, to, total, rp) {
     '<span class="pg"><button aria-label="First">⏮</button><button aria-label="Previous">‹</button><button aria-label="Next">›</button><button aria-label="Last">⏭</button></span></div>';
 }
 function tw(inner, cls) { return '<div class="tw"><table' + (cls ? ' class="' + cls + '"' : '') + '>' + inner + '</table></div>'; }
-function meter(p) { return '<div class="meter"><span class="l">Win Rate</span><div class="mt"><div class="mf" style="width:' + p + '%"></div></div><span class="mv">' + p + '%</span></div>'; }
 function kvs(rows) {
   return rows.map(function (r) {
     var neg = typeof r[1] === 'string' && r[1].charAt(0) === '-';
@@ -484,7 +485,8 @@ function pOngoing() {
     {k:'Total Disputed', v:D(1159287.51)},
     {k:'Total Approved', v:D(297773.04), c:'g'},
     {k:'Total Pending', v:D(14761.75), c:'a'},
-    {k:'Total Denied', v:D(846752.72), c:'r'}
+    {k:'Total Denied', v:D(846752.72), c:'r'},
+    {k:'Win Rate', v:'26.01%', bar:26.01, s:'Approved \u00f7 resolved'}
   ]) +
   panel('FinOps-Shortage Claim', ftoggle('og') + BIMP + BEXP,
     fpanel('og', [
@@ -510,7 +512,7 @@ function pBulk() {
   return strip([
     {k:'New Disputes', v:D(212724.80)}, {k:'Re-Disputes', v:D(11839.27)},
     {k:'Out Of Scope', v:D(138620.27)}, {k:'Total Pending', v:D(28787.60), c:'a'},
-    {k:'Win Rate', v:'25.75%', c:'g'}
+    {k:'Win Rate', v:'25.75%', bar:25.75, s:'130 of 362 disputes'}
   ]) +
   work(
     panel('Detailed Breakdown', '<span class="tag">side-scrollable</span>' + BIMP + BEXP,
@@ -524,7 +526,7 @@ function pBulk() {
             '<td><span class="toggle' + (r[10] ? ' on' : '') + '"><i></i></span></td>' + actions('bdown', i, 'job', 'Batch ' + r[3]) + '</tr>';
         }).join('') + '</tbody>') +
       tf(LIVE.bdown.length ? 1 : 0, LIVE.bdown.length, LIVE.bdown.length)) +
-    panel(null, '', '<div class="ph">' + seg('bulk', [['Approved', 130], ['Denied', 214], ['Pending', 18], ['All', 362]]) + '<div class="spacer"></div>' + meter(25.75) + BEXP + '</div>' +
+    panel(null, '', '<div class="ph">' + seg('bulk', [['Approved', 130], ['Denied', 214], ['Pending', 18], ['All', 362]]) + '<div class="spacer"></div>' + BEXP + '</div>' +
       tw('<thead>' + th(['Dispute ID', 'Type', 'Dispute Date', 'Dispute Status', 'Dispute Amount', 'Approved Amount', 'invoice Number', 'Payment Number'], [4, 5]) + '</thead><tbody>' +
         s.rows.map(function (r) {
           return '<tr><td class="mono">' + mk(r[0]) + '</td><td class="typ">' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td>' + pill(r[3]) + '</td>' +
@@ -541,9 +543,10 @@ function pPrice() {
   var k = FILT.price, s = PRICE[k];
   return strip([
     {k:'Total Disputed', v:D(342.06)}, {k:'Total Approved', v:D(342.06), c:'g'},
-    {k:'Total Pending', v:D(145.07), c:'a'}, {k:'Total Denied', v:D(122.50), c:'r'}
+    {k:'Total Pending', v:D(145.07), c:'a'}, {k:'Total Denied', v:D(122.50), c:'r'},
+    {k:'Win Rate', v:'100.00%', bar:100, s:'8 of 8 resolved claims'}
   ]) +
-  panel('Price Claim', ftoggle('pc') + meter(100) + BIMP + BEXP,
+  panel('Price Claim', ftoggle('pc') + BIMP + BEXP,
     fpanel('pc', [{l:'Search Dispute ID', p:'Search Dispute ID'}, {l:'Dispute Status', o:['All', 'Approved', 'Denied', 'Pending']},
       {l:'Start Date', p:'mm/dd/yyyy'}, {l:'End Date', p:'mm/dd/yyyy'}], '<button class="btn p">Search</button><button class="btn">Reset</button>') +
     '<div class="pb" style="padding-bottom:0">' + seg('price', [['Approved', 8], ['Denied', 3], ['Pending', 2], ['All', 13]]) + '</div>' +
@@ -560,7 +563,7 @@ function pOps() {
   return strip([
     {k:'Total Disputed', v:D(4424.54)}, {k:'Total Approved', v:D(2471.92), c:'g'},
     {k:'Total Pending', v:D(1340.22), c:'a'}, {k:'Total Denied', v:D(612.40), c:'r'},
-    {k:'Win Rate', v:'80.14%', c:'g'}
+    {k:'Win Rate', v:'80.14%', bar:80.14, s:'Approved \u00f7 resolved'}
   ]) +
   '<div class="grid2">' +
   panel('Infraction Split', '<select class="sel"><option>January</option><option>February</option></select><select class="sel"><option>2026</option><option>2025</option></select>',
@@ -615,7 +618,8 @@ function pCoop() {
     {k:'Finding Amount', v:D(7807.24), s:'Shipment Disparity, net of adjustments'},
     {k:'Yearly Trends', v:SD(-28049.86), c:'r', s:'2026 · <span class="xl" data-modal="yoy">View Details ›</span>'},
     {k:'Disputed Amount', v:D(296823.98), s:'<span class="xl" data-go="coopd">View Details ›</span>'},
-    {k:'Recouped Amount', v:D(0), s:'Export Remittance available'}
+    {k:'Recouped Amount', v:D(0), s:'Export Remittance available'},
+    {k:'Win Rate', v:'0.00%', bar:0, s:'No disputes resolved yet'}
   ]) +
   work(
     '<div class="grid2">' +
@@ -731,7 +735,8 @@ function pDispute() {
   var t1 = DISPUTES.reduce(function (a, r) { return a + r[2]; }, 0), t2 = DISPUTES.reduce(function (a, r) { return a + r[3]; }, 0);
   return strip([
     {k:'Dispute Amount', v:D(t1)}, {k:'Refund Amount (as per VC)', v:D(t2), c:'g'},
-    {k:'Open Disputes', v:'4', c:'a'}, {k:'Average TAT', v:'3.6 days'}
+    {k:'Open Disputes', v:'4', c:'a'}, {k:'Average TAT', v:'3.6 days'},
+    {k:'Win Rate', v:'50.00%', bar:50, s:'6 of 12 refunded'}
   ]) +
   panel(FILT.dispute, ftoggle('md') + BIMP + BEXP + '<button class="btn">ReOpen</button>',
     fpanel('md', [{l:'Search DisputeID', p:'Search DisputeID'},
