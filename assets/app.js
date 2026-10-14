@@ -13,6 +13,13 @@ var SD = function (n) { return (Number(n) < 0 ? '-' : '') + D(n); };
 var PN = function (n) { return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
 var N  = function (n) { return Number(n).toLocaleString('en-US'); };
 var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); };
+/* Identifiers render partially masked: first four characters, ***, last three.
+   B0C4KN2QLD -> B0C4***QLD. Placeholders ("-") and short values are left alone. */
+var mk = function (v) {
+  var s = String(v);
+  if (s.length < 8 || !/^[A-Za-z0-9]+$/.test(s)) return esc(s);
+  return esc(s.slice(0, 4) + '***' + s.slice(-3));
+};
 
 /* ---------- icons ---------- */
 var I = {
@@ -48,41 +55,41 @@ var A_DEL  = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path 
    ========================================================================= */
 var OG = {
  Approved:{n:916,cols:['Payment Number','Dispute ID','PO','PO Dates','Dispute Type','Dispute Date','Dispute Status','Dispute Amount','Approved Amount (As Per Vc)','Invoice Number','Invoice Dates'],
-  rows:[['-','DSPT10444658271','2T2BIY3Z','06/01/2026','Shortage invoice','08/09/26','Approved',659.95,395.97,'PTM-Vantio-42961SCRSCRSCR','-'],
-        ['367728578','DSPT12105602911','-','-','Shortage Invoice Re-Dispute','08/05/26','Approved',458.97,458.97,'PTM-PureStride-42213SCRSCR','-'],
+  rows:[['-','DSPT10444658271','2T2BIY3Z','06/01/2026','Shortage invoice','08/09/26','Approved',659.95,395.97,'PTM-A02-42961SCRSCRSCR','-'],
+        ['367728578','DSPT12105602911','-','-','Shortage Invoice Re-Dispute','08/05/26','Approved',458.97,458.97,'PTM-A03-42213SCRSCR','-'],
         ['-','DSPT11644229727','7IMISFVH','05/11/2026','Shortage invoice','08/02/26','Approved',79.51,17.99,'CPM-42448SCRSCR','-'],
         ['-','DSPT10838923359','8HXZVDED','05/18/2026','Shortage invoice','08/02/26','Approved',365.33,177.30,'CPM-42531SCR','-'],
         ['367605778','DSPT11912665183','14W3T59Z','05/18/2026','Shortage invoice','08/02/26','Approved',125.97,125.97,'CPM-42476SCR','-'],
-        ['367531599','DSPT11577067615','-','-','Shortage Invoice Re-Dispute','08/01/26','Approved',791.94,791.94,'PTM-NordFlask-42267SCRSCR','-'],
-        ['-','DSPT10083930463','9QKX2MPA','04/22/2026','Shortage invoice','07/28/26','Approved',686.80,569.80,'PTM-CoreGuard-30908','-'],
-        ['367372133','DSPT10687910239','-','-','Shortage Invoice Re-Dispute','07/28/26','Approved',135.99,135.99,'PTM-ZenithPet-29697','-'],
-        ['-','DSPT10771763551','-','-','Shortage Invoice Re-Dispute','07/28/26','Approved',359.04,359.04,'PTM-Lumora-30659','-'],
-        ['367298044','DSPT11204417823','3PW8KD2M','04/09/2026','Shortage invoice','07/21/26','Approved',1042.18,1042.18,'PTM-TrailKit-29804SCR','-']],
+        ['367531599','DSPT11577067615','-','-','Shortage Invoice Re-Dispute','08/01/26','Approved',791.94,791.94,'PTM-A04-42267SCRSCR','-'],
+        ['-','DSPT10083930463','9QKX2MPA','04/22/2026','Shortage invoice','07/28/26','Approved',686.80,569.80,'PTM-A05-30908','-'],
+        ['367372133','DSPT10687910239','-','-','Shortage Invoice Re-Dispute','07/28/26','Approved',135.99,135.99,'PTM-A06-29697','-'],
+        ['-','DSPT10771763551','-','-','Shortage Invoice Re-Dispute','07/28/26','Approved',359.04,359.04,'PTM-A07-30659','-'],
+        ['367298044','DSPT11204417823','3PW8KD2M','04/09/2026','Shortage invoice','07/21/26','Approved',1042.18,1042.18,'PTM-A08-29804SCR','-']],
   money:[7,8],st:6},
  /* Denied carries NO Payment Number — matches production */
  Denied:{n:1441,cols:['Dispute ID','PO','PO Dates','Dispute Type','Dispute Date','Dispute Status','Dispute Amount','Approved Amount (As Per Vc)','Invoice Number','Invoice Dates'],
-  rows:[['DSPT11283519071','5JI7NRRW','06/01/2026','Shortage invoice','08/09/26','Denied',139.60,0,'PTM-Verasol-42949SCR','-'],
+  rows:[['DSPT11283519071','5JI7NRRW','06/01/2026','Shortage invoice','08/09/26','Denied',139.60,0,'PTM-A10-42949SCR','-'],
         ['DSPT10503325791','-','-','Shortage Invoice Re-Dispute','08/01/26','Denied',47.98,0,'CPM-42033SCR','-'],
-        ['DSPT10117458527','-','-','Shortage Invoice Re-Dispute','07/30/26','Denied',552.44,0,'PTM-Brightmoor-43052','-'],
-        ['DSPT11526785631','-','-','Shortage Invoice Re-Dispute','07/30/26','Denied',90.70,0,'PTM-Kestrel-32146','-'],
-        ['DSPT12097196383','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',205.41,0,'PTM-CoreGuard-30229','-'],
-        ['DSPT10285257055','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',169.99,0,'PTM-Vantio-31044','-'],
-        ['DSPT10973090143','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',49.40,0,'PTM-Lumora-31315','-'],
-        ['DSPT11610624351','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',169.99,0,'PTM-Vantio-31043','-'],
-        ['DSPT10268447071','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',26.52,0,'PTM-Lumora-30852','-'],
-        ['DSPT10520105311','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',78.12,0,'PTM-ZenithPet-32162','-']],
+        ['DSPT10117458527','-','-','Shortage Invoice Re-Dispute','07/30/26','Denied',552.44,0,'PTM-A09-43052','-'],
+        ['DSPT11526785631','-','-','Shortage Invoice Re-Dispute','07/30/26','Denied',90.70,0,'PTM-A11-32146','-'],
+        ['DSPT12097196383','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',205.41,0,'PTM-A05-30229','-'],
+        ['DSPT10285257055','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',169.99,0,'PTM-A02-31044','-'],
+        ['DSPT10973090143','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',49.40,0,'PTM-A07-31315','-'],
+        ['DSPT11610624351','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',169.99,0,'PTM-A02-31043','-'],
+        ['DSPT10268447071','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',26.52,0,'PTM-A07-30852','-'],
+        ['DSPT10520105311','-','-','Shortage Invoice Re-Dispute','07/28/26','Denied',78.12,0,'PTM-A06-32162','-']],
   money:[6,7],st:5},
  'Pending with Amazon':{n:29,cols:['Payment Number','Dispute ID','PO','PO Dates','Dispute Type','Dispute Date','Dispute Status','Dispute Amount','Approved Amount (As Per Vc)','Invoice Number','Invoice Dates'],
-  rows:[['-','DSPT10404753503','-','-','Shortage Invoice','09/12/26','Pending Amazon Action',251.97,0,'PTM-TrailKit-44796SCR','-'],
+  rows:[['-','DSPT10404753503','-','-','Shortage Invoice','09/12/26','Pending Amazon Action',251.97,0,'PTM-A08-44796SCR','-'],
         ['-','DSPT11008737631','-','-','Shortage Invoice','09/07/26','Pending Amazon Action',457.34,0,'CPM-44603SCR','-'],
         ['-','DSPT12032151391','-','-','Shortage Invoice','09/04/26','Pending Amazon Action',604.68,0,'CPM-44450SCR','-'],
         ['-','DSPT11025529695','-','-','Shortage Invoice','09/03/26','Pending Amazon Action',286.53,0,'CPM-44444SCR','-'],
         ['-','DSPT11092638559','-','-','Shortage Invoice','09/03/26','Pending Amazon Action',109.83,0,'CPM-44430SCR','-'],
         ['-','DSPT10639678303','-','-','Shortage Invoice','09/03/26','Pending Amazon Action',312.09,0,'CPM-44425SCR','-'],
-        ['-','DSPT11545621343','-','-','Shortage Invoice','09/03/26','Pending Amazon action',20.01,0,'PTM-Lumora-44472SCR','-'],
+        ['-','DSPT11545621343','-','-','Shortage Invoice','09/03/26','Pending Amazon action',20.01,0,'PTM-A07-44472SCR','-'],
         ['-','DSPT11612730207','-','-','Shortage Invoice','09/03/26','Pending Amazon action',352.73,0,'CPM-44421SCR','-'],
         ['-','DSPT10136335199','-','-','Shortage Invoice','09/03/26','Pending Amazon action',21.31,0,'CPM-44403SCR','-'],
-        ['-','DSPT11623212639','-','-','Shortage Invoice','08/31/26','Pending Amazon Action',1330.56,0,'PTM-Lumora-44414SCR','-']],
+        ['-','DSPT11623212639','-','-','Shortage Invoice','08/31/26','Pending Amazon Action',1330.56,0,'PTM-A07-44414SCR','-']],
   money:[7,8],st:6},
  Upcoming:{n:582,cols:['Invoice Number','Invoice Dates','Payment Due date','QTY Variance Amount','Actual Paid Amount','Dispute Type','Dispute Status','Estimated Dispute Date'],
   rows:[['CPM-30127SCRSCR','12/15/25','01/14/26',220.10,'-','Upcoming Shortage','Not Yet disputed','02/18/26'],
@@ -113,24 +120,24 @@ var BREAK = [[1,'DSPT11644229727',61.52,'DSPT10075522655',0,'08/08/26','Denied',
  [10,'DSPT10670572127',26.52,'DSPT10268447071',0,'07/28/26','Denied','Shortage Invoice Re-Dispute']];
 
 var BULK = {
- Approved:{n:130,rows:[['DSPT11257036127','Shortage Invoice Re-Dispute','10/16/25','Approved',378.80,378.80,'PTM-TrailKit-26703','348088123'],
-  ['DSPT11542248799','Shortage Invoice Re-Dispute','10/16/25','Approved',647.76,647.76,'PTM-PureStride-25717','348088123'],
-  ['DSPT10250370399','Shortage Invoice Re-Dispute','10/16/25','Approved',283.80,283.80,'PTM-Verasol-24342','348088123'],
-  ['DSPT12062309727','Shortage Invoice Re-Dispute','10/16/25','Approved',125.98,125.98,'PTM-PureStride-23920','348088123'],
-  ['DSPT10552360287','Shortage Invoice Re-Dispute','10/16/25','Approved',125.98,125.98,'PTM-PureStride-23780','348088123'],
-  ['DSPT10753686879','Shortage Invoice Re-Dispute','10/16/25','Approved',582.12,582.12,'PTM-CoreGuard-23885','348088123'],
-  ['DSPT10401365343','Shortage Invoice Re-Dispute','10/16/25','Approved',10.48,10.48,'PTM-Lumora-23466','348088123'],
-  ['DSPT10686578015','Shortage Invoice Re-Dispute','10/16/25','Approved',227.88,227.88,'PTM-CoreGuard-23478','348088123'],
-  ['DSPT11072453983','Shortage Invoice Re-Dispute','10/16/25','Approved',1187.60,1187.60,'PTM-PureStride-22883','348088123'],
-  ['DSPT11089231199','Shortage Invoice Re-Dispute','10/16/25','Approved',118.56,118.56,'PTM-Verasol-20760','348088123']]},
- Denied:{n:214,rows:[['DSPT10994172831','Shortage Invoice Re-Dispute','10/16/25','Denied',412.90,0,'PTM-Vantio-26114','348088123'],
+ Approved:{n:130,rows:[['DSPT11257036127','Shortage Invoice Re-Dispute','10/16/25','Approved',378.80,378.80,'PTM-A08-26703','348088123'],
+  ['DSPT11542248799','Shortage Invoice Re-Dispute','10/16/25','Approved',647.76,647.76,'PTM-A03-25717','348088123'],
+  ['DSPT10250370399','Shortage Invoice Re-Dispute','10/16/25','Approved',283.80,283.80,'PTM-A10-24342','348088123'],
+  ['DSPT12062309727','Shortage Invoice Re-Dispute','10/16/25','Approved',125.98,125.98,'PTM-A03-23920','348088123'],
+  ['DSPT10552360287','Shortage Invoice Re-Dispute','10/16/25','Approved',125.98,125.98,'PTM-A03-23780','348088123'],
+  ['DSPT10753686879','Shortage Invoice Re-Dispute','10/16/25','Approved',582.12,582.12,'PTM-A05-23885','348088123'],
+  ['DSPT10401365343','Shortage Invoice Re-Dispute','10/16/25','Approved',10.48,10.48,'PTM-A07-23466','348088123'],
+  ['DSPT10686578015','Shortage Invoice Re-Dispute','10/16/25','Approved',227.88,227.88,'PTM-A05-23478','348088123'],
+  ['DSPT11072453983','Shortage Invoice Re-Dispute','10/16/25','Approved',1187.60,1187.60,'PTM-A03-22883','348088123'],
+  ['DSPT11089231199','Shortage Invoice Re-Dispute','10/16/25','Approved',118.56,118.56,'PTM-A10-20760','348088123']]},
+ Denied:{n:214,rows:[['DSPT10994172831','Shortage Invoice Re-Dispute','10/16/25','Denied',412.90,0,'PTM-A02-26114','348088123'],
   ['DSPT11338092447','Shortage Invoice Re-Dispute','10/16/25','Denied',88.14,0,'CPM-25903','348088123'],
-  ['DSPT10477218655','Shortage Invoice Re-Dispute','10/16/25','Denied',1504.22,0,'PTM-NordFlask-25488','348088123'],
-  ['DSPT11760334079','Shortage Invoice Re-Dispute','10/16/25','Denied',236.75,0,'PTM-ZenithPet-24901','348088123'],
+  ['DSPT10477218655','Shortage Invoice Re-Dispute','10/16/25','Denied',1504.22,0,'PTM-A04-25488','348088123'],
+  ['DSPT11760334079','Shortage Invoice Re-Dispute','10/16/25','Denied',236.75,0,'PTM-A06-24901','348088123'],
   ['DSPT10118467295','Shortage Invoice Re-Dispute','10/16/25','Denied',67.30,0,'CPM-24118','348088123']]},
- Pending:{n:18,rows:[['DSPT11905338271','Shortage Invoice','10/16/25','Pending Amazon Action',844.09,0,'PTM-Brightmoor-26880','348088123'],
+ Pending:{n:18,rows:[['DSPT11905338271','Shortage Invoice','10/16/25','Pending Amazon Action',844.09,0,'PTM-A09-26880','348088123'],
   ['DSPT10663271903','Shortage Invoice','10/16/25','Pending Amazon Action',301.44,0,'CPM-26712','348088123'],
-  ['DSPT11471096543','Shortage Invoice','10/16/25','Pending Amazon Action',159.88,0,'PTM-Kestrel-26355','348088123']]}
+  ['DSPT11471096543','Shortage Invoice','10/16/25','Pending Amazon Action',159.88,0,'PTM-A11-26355','348088123']]}
 };
 BULK.All = {n:362,rows:BULK.Approved.rows.slice(0,5).concat(BULK.Denied.rows.slice(0,3)).concat(BULK.Pending.rows.slice(0,2))};
 
@@ -150,7 +157,7 @@ var ASIN = [['B0C4KN2QLD','In Full Delivery','Shortage at receipt',412,2184.60,2
  ['B0C4KN3MXP','On-time shipment','Late carrier pickup',188,1340.22,1340.22,0,'Pending Amazon Action'],
  ['B0C4KN4TRV','Receiving Accuracy','Carton count variance',96,448.01,151.89,151.89,'Approved'],
  ['B0C4KN5WQJ','In Full Delivery','Shortage at receipt',240,968.01,135.43,135.43,'Approved'],
- ['B0C4KN6ZHB','On-time shipment','Missed delivery window',74,612.40,0,0,'Denied']];
+ ['B0C4KN6ZHB','On-time shipment','Missed delivery window',74,612.40,612.40,0,'Denied']];
 var COOP_SUB = [['Shipment Disparity',9270.68,1463.44,7807.24],['Duplicate Freight',0,0,0],['Non-compliant Freight',0,0,0],['Duplicate Billing',0,0,0],['Non Compliant Fee',0,0,0]];
 var JOBS = [['10/03/26','Shortage Reconciliation'],['09/29/26','Shortage Reconciliation'],['09/21/26','Shortage Reconciliation'],['09/16/26','Shortage Reconciliation'],['09/03/26','Shortage Reconciliation'],['08/14/26','Duplicate Freight'],['08/14/26','Shipment Disparity'],['08/14/26','Non-compliant Freight'],['08/11/26','Shortage Reconciliation'],['08/03/26','Shortage Reconciliation']];
 var BDOWN0 = [
@@ -158,7 +165,7 @@ var BDOWN0 = [
  [2,166116.28,'01/12/2026 - 05/29/2026','TS00000017_1783588475223','07/09/26','07/16/26',[127557.87,191],[5969.39,7],32589.02,'All DONE',true],
  [3,113978.90,'06/01/2026 - 07/10/2026','TS00000017_1787117690029','08/19/26','-',[0,0],[0,0],0,'FETCHING INVOICES DETAILS',false]];
 var YOY = [['2026',-28049.86],['2025',425897.41],['2024',-390033.96],['2023',-6.35]];
-var COOPD0 = [['DSPT11391985759',296823.98,0,'A. Sharma','07/24/26','-','Shipment Disparity','-','Resolved']];
+var COOPD0 = [['DSPT11391985759',296823.98,0,'Demo User 1','07/24/26','-','Shipment Disparity','-','Resolved']];
 var RESULT = [['80211255',270301.60,3855.29,13498.88,9643.59,'0.00%',0,0],['76407815',9865.36,0,0,0,'0.00%',0,0],
  ['98218195',70036.11,202.61,418.85,216.23,'0.00%',0,0],['77094245',50422.72,197.99,42.67,155.32,'0.00%',161.67,0],
  ['69950885',303523.73,6433.45,57383.07,50949.62,'0.00%',0,0],['106093875',213.40,1.20,0,1.20,'0.00%',0,0],
@@ -170,61 +177,61 @@ var RESULT = [['80211255',270301.60,3855.29,13498.88,9643.59,'0.00%',0,0],['7640
 var SPARK = [4100,5200,4600,6800,5400,7900,6200,8800,7100,9270,8400,7807];
 var EB = {2026:[62,88,71,104,96,131,118,152,141,166,0,0],2025:[210,186,241,198,266,221,284,239,301,262,318,274],2024:[344,298,361,312,389,330,402,348,418,366,441,380]};
 
-var DISPUTES = [['US - Rebelution US','DSPT11391985759',296823.98,0,'0.0%','A. Sharma','07/24/26','-','Shipment Disparity','-','RESOLVED'],
- ['US - Vantio','DSPT11660154975',726.93,726.93,'100.0%','A. Sharma','09/09/26','09/14/26','Shipment Disparity','5','Resolved'],
- ['US - PureStride','DSPT11152636255',589.19,0,'0.0%','A. Sharma','08/11/26','08/17/26','Duplicate Freight','6','Resolved'],
- ['US - NordFlask','DSPT11565384543',671.69,0,'0.0%','M. Iyer','08/11/26','08/12/26','Shipment Disparity','1','Resolved'],
- ['US - CoreGuard','DSPT11018379615',620.14,620.14,'100.0%','M. Iyer','08/10/26','08/14/26','Shipment Disparity','4','Resolved'],
- ['US - ZenithPet','DSPT11421073759',674.20,674.20,'100.0%','A. Sharma','08/10/26','08/14/26','Non Compliant Fee','4','Resolved'],
- ['US - Lumora','DSPT11238270047',412.14,412.14,'100.0%','M. Iyer','08/03/26','08/07/26','Shipment Disparity','4','Resolved'],
- ['US - TrailKit','DSPT11036918879',629.22,0,'0.0%','A. Sharma','08/03/26','08/05/26','Duplicate Billing','2','Resolved'],
- ['US - Brightmoor','DSPT11295210079',679.88,679.88,'100.0%','M. Iyer','08/03/26','08/07/26','Shipment Disparity','4','Resolved'],
- ['US - Verasol','DSPT11389240415',644.25,504.21,'78.26%','A. Sharma','08/03/26','08/06/26','Shipment Disparity','3','Resolved'],
- ['US - Kestrel','DSPT11469779039',869.78,0,'0.0%','M. Iyer','07/31/26','-','Shipment Disparity','-','RESOLVED'],
- ['US - Vantio','DSPT11268445279',1274.24,0,'0.0%','A. Sharma','07/30/26','-','Shipment Disparity','-','RESOLVED']];
+var DISPUTES = [['Demo Account 1','DSPT11391985759',296823.98,0,'0.0%','Demo User 1','07/24/26','-','Shipment Disparity','-','RESOLVED'],
+ ['Demo Account 2','DSPT11660154975',726.93,726.93,'100.0%','Demo User 1','09/09/26','09/14/26','Shipment Disparity','5','Resolved'],
+ ['Demo Account 3','DSPT11152636255',589.19,0,'0.0%','Demo User 1','08/11/26','08/17/26','Duplicate Freight','6','Resolved'],
+ ['Demo Account 4','DSPT11565384543',671.69,0,'0.0%','Demo User 2','08/11/26','08/12/26','Shipment Disparity','1','Resolved'],
+ ['Demo Account 5','DSPT11018379615',620.14,620.14,'100.0%','Demo User 2','08/10/26','08/14/26','Shipment Disparity','4','Resolved'],
+ ['Demo Account 6','DSPT11421073759',674.20,674.20,'100.0%','Demo User 1','08/10/26','08/14/26','Non Compliant Fee','4','Resolved'],
+ ['Demo Account 7','DSPT11238270047',412.14,412.14,'100.0%','Demo User 2','08/03/26','08/07/26','Shipment Disparity','4','Resolved'],
+ ['Demo Account 8','DSPT11036918879',629.22,0,'0.0%','Demo User 1','08/03/26','08/05/26','Duplicate Billing','2','Resolved'],
+ ['Demo Account 9','DSPT11295210079',679.88,679.88,'100.0%','Demo User 2','08/03/26','08/07/26','Shipment Disparity','4','Resolved'],
+ ['Demo Account 10','DSPT11389240415',644.25,504.21,'78.26%','Demo User 1','08/03/26','08/06/26','Shipment Disparity','3','Resolved'],
+ ['Demo Account 11','DSPT11469779039',869.78,0,'0.0%','Demo User 2','07/31/26','-','Shipment Disparity','-','RESOLVED'],
+ ['Demo Account 2','DSPT11268445279',1274.24,0,'0.0%','Demo User 1','07/30/26','-','Shipment Disparity','-','RESOLVED']];
 
-var CUST = [[1,'US','Rebelution US','US - Rebelution US','vcbot@tradescan.io','03/27/25','12.5%','Net 30','-','-','No','1.84%',7807.24,296823.98,'3801.91%',7807.24,0,1463.44,296823.98],
- [2,'US','Vantio Group','US - Vantio','vcbot@tradescan.io','04/02/25','15.0%','Net 30','Partner','20%','Yes','2.43%',5659.78,6656.00,'117.6%',5659.78,6111.55,0,248.64],
- [3,'US','PureStride Brands','US - PureStride','vcbot@tradescan.io','04/02/25','15.0%','Net 30','Partner','20%','Yes','1.71%',7768.95,9976.86,'128.42%',7768.95,9913.52,0,167.91],
- [4,'US','NordFlask Inc','US - NordFlask','vcbot@tradescan.io','05/18/25','12.5%','Net 45','-','-','Yes','1.07%',3142.84,6745.77,'214.64%',3142.84,4667.78,0,2158.73],
- [5,'US','CoreGuard Safety','US - CoreGuard','vcbot@tradescan.io','06/09/25','12.5%','Net 30','-','-','Yes','0.95%',15219.96,15665.48,'100.92%',15219.96,1463.55,0,13502.08],
- [6,'US','ZenithPet LLC','US - ZenithPet','vcbot@tradescan.io','07/14/25','15.0%','Net 30','Partner','20%','Yes','1.32%',3264.31,8636.63,'264.58%',3264.31,1546.01,0,7090.62],
- [7,'US','Lumora Home','US - Lumora','vcbot@tradescan.io','08/01/25','12.5%','Net 30','-','-','Yes','1.03%',989.45,1401.15,'141.61%',989.45,599.29,0,801.85],
- [8,'US','TrailKit Outdoor','US - TrailKit','vcbot@tradescan.io','09/22/25','12.5%','Net 45','-','-','No','-','-','-','-','-','-','-','-']];
+var CUST = [[1,'US','Demo Account 1','Demo Account 1','vcbot@tradescan.io','03/27/25','12.5%','Net 30','-','-','No','1.84%',7807.24,296823.98,'3801.91%',7807.24,0,1463.44,296823.98],
+ [2,'US','Demo Account 2','Demo Account 2','vcbot@tradescan.io','04/02/25','15.0%','Net 30','Partner','20%','Yes','2.43%',5659.78,6656.00,'117.6%',5659.78,6111.55,0,248.64],
+ [3,'US','Demo Account 3','Demo Account 3','vcbot@tradescan.io','04/02/25','15.0%','Net 30','Partner','20%','Yes','1.71%',7768.95,9976.86,'128.42%',7768.95,9913.52,0,167.91],
+ [4,'US','Demo Account 4','Demo Account 4','vcbot@tradescan.io','05/18/25','12.5%','Net 45','-','-','Yes','1.07%',3142.84,6745.77,'214.64%',3142.84,4667.78,0,2158.73],
+ [5,'US','Demo Account 5','Demo Account 5','vcbot@tradescan.io','06/09/25','12.5%','Net 30','-','-','Yes','0.95%',15219.96,15665.48,'100.92%',15219.96,1463.55,0,13502.08],
+ [6,'US','Demo Account 6','Demo Account 6','vcbot@tradescan.io','07/14/25','15.0%','Net 30','Partner','20%','Yes','1.32%',3264.31,8636.63,'264.58%',3264.31,1546.01,0,7090.62],
+ [7,'US','Demo Account 7','Demo Account 7','vcbot@tradescan.io','08/01/25','12.5%','Net 30','-','-','Yes','1.03%',989.45,1401.15,'141.61%',989.45,599.29,0,801.85],
+ [8,'US','Demo Account 8','Demo Account 8','vcbot@tradescan.io','09/22/25','12.5%','Net 45','-','-','No','-','-','-','-','-','-','-','-']];
 
 var ONB = {
- 'Onboarded In Last 30 Days':[['US - TrailKit','TrailKit Outdoor','TK-VC-5546','09/22/25','Yes','Completed'],
-   ['US - Lumora','Lumora Home','LM-VC-4418','09/30/25','Yes','Completed']],
- 'Job Submitted In Last 90 Days':[['US - Rebelution US','Rebelution US','RB-VC-5041','08/03/26','Yes','Shortage Reconciliation'],
-   ['US - Vantio','Vantio Group','VN-VC-2208','08/14/26','Yes','Shipment Disparity'],
-   ['US - CoreGuard','CoreGuard Safety','CG-VC-3390','09/16/26','Yes','Duplicate Freight']],
- 'Contract Details Not Updated':[['US - Rebelution US','Rebelution US','RB-VC-5041','03/27/25','No','Pending Amazon Action'],
-   ['US - TrailKit','TrailKit Outdoor','TK-VC-5546','09/22/25','No','Pending Amazon Action']],
- 'Contract Details Updated':[['US - Vantio','Vantio Group','VN-VC-2208','04/02/25','Yes','Completed'],
-   ['US - PureStride','PureStride Brands','PS-VC-7714','04/02/25','Yes','Completed'],
-   ['US - NordFlask','NordFlask Inc','NF-VC-3390','05/18/25','Yes','Completed'],
-   ['US - ZenithPet','ZenithPet LLC','ZP-VC-8821','07/14/25','Yes','Completed']]
+ 'Onboarded In Last 30 Days':[['Demo Account 8','Demo Account 8','VC-0008','09/22/25','Yes','Completed'],
+   ['Demo Account 7','Demo Account 7','VC-0007','09/30/25','Yes','Completed']],
+ 'Job Submitted In Last 90 Days':[['Demo Account 1','Demo Account 1','VC-0001','08/03/26','Yes','Shortage Reconciliation'],
+   ['Demo Account 2','Demo Account 2','VC-0002','08/14/26','Yes','Shipment Disparity'],
+   ['Demo Account 5','Demo Account 5','VC-0005','09/16/26','Yes','Duplicate Freight']],
+ 'Contract Details Not Updated':[['Demo Account 1','Demo Account 1','VC-0001','03/27/25','No','Pending Amazon Action'],
+   ['Demo Account 8','Demo Account 8','VC-0008','09/22/25','No','Pending Amazon Action']],
+ 'Contract Details Updated':[['Demo Account 2','Demo Account 2','VC-0002','04/02/25','Yes','Completed'],
+   ['Demo Account 3','Demo Account 3','VC-0003','04/02/25','Yes','Completed'],
+   ['Demo Account 4','Demo Account 4','VC-0004','05/18/25','Yes','Completed'],
+   ['Demo Account 6','Demo Account 6','VC-0006','07/14/25','Yes','Completed']]
 };
 
-var DLMGR = [[1,'US - Rebelution US','On Going Shortage','Approved Disputes','10/13/26 09:12','Completed'],
- [2,'US - Rebelution US','Excess Coop Billing','Granular Analysis','10/13/26 08:55','Completed'],
- [3,'US - Rebelution US','Missed Invoicing','Progress Tracker','10/13/26 08:51','In Progress'],
- [4,'US - Rebelution US','P&L Analysis','Yearly Comparison','10/12/26 18:30','Completed'],
- [5,'US - Vantio','Ops Chargeback','ASIN Level Split','10/12/26 14:02','Completed'],
- [6,'US - PureStride','Price Claim','Approved Disputes','10/12/26 11:47','Failed']];
+var DLMGR = [[1,'Demo Account 1','On Going Shortage','Approved Disputes','10/13/26 09:12','Completed'],
+ [2,'Demo Account 1','Excess Coop Billing','Granular Analysis','10/13/26 08:55','Completed'],
+ [3,'Demo Account 1','Missed Invoicing','Progress Tracker','10/13/26 08:51','In Progress'],
+ [4,'Demo Account 1','P&L Analysis','Yearly Comparison','10/12/26 18:30','Completed'],
+ [5,'Demo Account 2','Ops Chargeback','ASIN Level Split','10/12/26 14:02','Completed'],
+ [6,'Demo Account 3','Price Claim','Approved Disputes','10/12/26 11:47','Failed']];
 
-var CLIENTS = [[1,'US','Rebelution US','RB-VC-5041','Yes','Yes','Yes','Yes'],
- [2,'US','Vantio Group','VN-VC-2208','Yes','Yes','Yes','No'],
- [3,'US','PureStride Brands','PS-VC-7714','Yes','No','Yes','Yes'],
- [4,'US','NordFlask Inc','NF-VC-3390','Yes','Yes','No','No'],
- [5,'US','CoreGuard Safety','CG-VC-3390','No','Yes','Yes','No'],
- [6,'US','ZenithPet LLC','ZP-VC-8821','Yes','No','No','No'],
- [7,'US','TrailKit Outdoor','TK-VC-5546','No','No','No','No']];
-var USERS = [['r.bhattacharya@tradescan.io','Administrator','All','All (7)','Today, 09:14','Active'],
- ['d.mukhuty@tradescan.io','Operations Lead','All','All (7)','Today, 08:40','Active'],
- ['s.roy@tradescan.io','Analyst','Rebelution US','3 assigned','Yesterday, 17:22','Active'],
- ['finance@rebelution.example','Client (external)','Rebelution US','Own only','2 days ago','Active'],
- ['temp.audit@tradescan.io','Read only','Rebelution US','1 assigned','18 days ago','Expired']];
+var CLIENTS = [[1,'US','Demo Account 1','VC-0001','Yes','Yes','Yes','Yes'],
+ [2,'US','Demo Account 2','VC-0002','Yes','Yes','Yes','No'],
+ [3,'US','Demo Account 3','VC-0003','Yes','No','Yes','Yes'],
+ [4,'US','Demo Account 4','VC-0004','Yes','Yes','No','No'],
+ [5,'US','Demo Account 5','VC-0005','No','Yes','Yes','No'],
+ [6,'US','Demo Account 6','VC-0006','Yes','No','No','No'],
+ [7,'US','Demo Account 8','VC-0008','No','No','No','No']];
+var USERS = [['demo.admin@tradescan.io','Administrator','All','All (7)','Today, 09:14','Active'],
+ ['demo.ops@tradescan.io','Operations Lead','All','All (7)','Today, 08:40','Active'],
+ ['demo.analyst@tradescan.io','Analyst','Demo Account 1','3 assigned','Yesterday, 17:22','Active'],
+ ['finance@demoaccount1.example','Client (external)','Demo Account 1','Own only','2 days ago','Active'],
+ ['demo.audit@tradescan.io','Read only','Demo Account 1','1 assigned','18 days ago','Expired']];
 var GROUPS = [['Finance — full',4,'All (11)','All (7)','01/12/26','Active'],['Analyst — US',3,'8 of 11','3 assigned','02/04/26','Active'],
  ['Client read-only',6,'4 of 11','Own only','01/12/26','Active'],['External audit',1,'2 of 11','1 assigned','09/25/26','Time-limited']];
 
@@ -271,7 +278,7 @@ var NOTIF = [
  {u:0, c:'var(--crit)', t:'Coop agreement overbilled',
   m:'Agreement 83322470 shows $478,779.64 overbilled — 62.00% disputed.', g:'result', w:'Yesterday'},
  {u:0, c:'var(--ink-3)', t:'Contract expiring in 60 days',
-  m:'US - TrailKit contract renewal is due. Review in Customer Dashboard.', g:'customer', w:'2 days ago'}
+  m:'Demo Account 8 contract renewal is due. Review in Customer Dashboard.', g:'customer', w:'2 days ago'}
 ];
 var NAVFOR = {coopd:'coop',result:'coop'};
 
@@ -435,7 +442,8 @@ function pDashboard() {
         kvs([['Disputed', D(342.06)], ['Approved', D(342.06)], ['Pending', D(0)], ['Approved Rate', '100.00%']]) + '</div>') +
       panel('Operational Chargeback', '<button class="btn" data-go="ops">Open ›</button>', '<div class="pb">' + kvs([
         ['In Full Delivery', D(63238.80), 'amber'], ['On-time shipment', D(63139.54), 'amber'],
-        ['Receiving Accuracy', D(7711.93), 'amber'], ['Disputed', D(472.95)], ['Approved', D(472.95)], ['Win Rate', '100.00%']]) + '</div>') +
+        ['Receiving Accuracy', D(7711.93), 'amber'], ['Disputed', D(4424.54)], ['Approved', D(2471.92)],
+        ['Denied', D(612.40)], ['Win Rate', '80.14%']]) + '</div>') +
       panel('Missed Invoicing', '<button class="btn" data-go="missed">Open ›</button>', '<div class="pb">' + kvs([
         ['Shipped but not invoiced', D(35579.56)], ['Claim Submitted', D(18204.11)],
         ['Recouped Amount', D(18204.11)], ['Recouped Rate', '51.17%']]) + '</div>') +
@@ -448,8 +456,8 @@ function pDashboard() {
     '</div>',
     /* sticky context column */
     panel('Account', '', '<div class="pb">' +
-      '<div style="display:flex;gap:11px;align-items:center;margin-bottom:12px"><div class="avatar" style="width:38px;height:38px;font-size:13px">RB</div>' +
-      '<div><div style="font-size:14px;font-weight:600">Welcome, Rohit</div><div style="font-size:11.5px;color:var(--ink-3)">US - Rebelution US</div></div></div>' +
+      '<div style="display:flex;gap:11px;align-items:center;margin-bottom:12px"><div class="avatar" style="width:38px;height:38px;font-size:13px">DU</div>' +
+      '<div><div style="font-size:14px;font-weight:600">Welcome, Demo User</div><div style="font-size:11.5px;color:var(--ink-3)">Demo Account 1</div></div></div>' +
       '<div style="font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:4px">Total Impact Overview</div>' +
       metrics([['Total Hours Saved', '14,990 Hrs', 'hrs'], ['Total Amount Saved', '$449,700', 'amt'], ['Total FTE Saved/week', "367 FTE's", 'fte']]) + '</div>') +
     '<div class="note"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" style="flex:none;margin-top:1px"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v3.8M8 5.2v.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>' +
@@ -466,7 +474,8 @@ function pOngoing() {
       if ((s.money || []).indexOf(i) > -1) return '<td class="num">' + D(v) + '</td>';
       if ((s.plain || []).indexOf(i) > -1) return '<td class="num">' + PN(v) + '</td>';
       if (/Type/.test(s.cols[i])) return '<td class="typ">' + esc(v) + '</td>';
-      if (/Dispute ID|Invoice Number|Payment Number|^PO$/.test(s.cols[i])) return '<td class="mono">' + esc(v) + '</td>';
+      if (/Dispute ID|Payment Number|^PO$/.test(s.cols[i])) return '<td class="mono">' + mk(v) + '</td>';
+      if (/Invoice Number/.test(s.cols[i])) return '<td class="mono">' + esc(v) + '</td>';
       return '<td>' + esc(v) + '</td>';
     }).join('') + '</tr>';
   }).join('');
@@ -489,7 +498,7 @@ function pOngoing() {
   panel('Detailed Breakdown', BEXP,
     tw('<thead>' + th(['S.No', 'Dispute ID', 'Total Disputed Amount', 'New Submitted Dispute Id', 'Approved Amount', 'Create Date', 'Dispute Status', 'Dispute Type'], [0, 2, 4]) + '</thead><tbody>' +
       BREAK.map(function (r) {
-        return '<tr><td class="num">' + r[0] + '</td><td class="mono">' + esc(r[1]) + '</td><td class="num">' + D(r[2]) + '</td><td class="mono">' + esc(r[3]) + '</td>' +
+        return '<tr><td class="num">' + r[0] + '</td><td class="mono">' + mk(r[1]) + '</td><td class="num">' + D(r[2]) + '</td><td class="mono">' + mk(r[3]) + '</td>' +
           '<td class="num">' + (r[4] ? D(r[4]) : '-') + '</td><td>' + esc(r[5]) + '</td><td>' + pill(r[6]) + '</td><td class="typ">' + esc(r[7]) + '</td></tr>';
       }).join('') + '</tbody>') +
     tf(1, 10, 1387, ['10', '30', '45']));
@@ -518,8 +527,8 @@ function pBulk() {
     panel(null, '', '<div class="ph">' + seg('bulk', [['Approved', 130], ['Denied', 214], ['Pending', 18], ['All', 362]]) + '<div class="spacer"></div>' + meter(25.75) + BEXP + '</div>' +
       tw('<thead>' + th(['Dispute ID', 'Type', 'Dispute Date', 'Dispute Status', 'Dispute Amount', 'Approved Amount', 'invoice Number', 'Payment Number'], [4, 5]) + '</thead><tbody>' +
         s.rows.map(function (r) {
-          return '<tr><td class="mono">' + esc(r[0]) + '</td><td class="typ">' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td>' + pill(r[3]) + '</td>' +
-            '<td class="num">' + D(r[4]) + '</td><td class="num">' + D(r[5]) + '</td><td class="mono">' + esc(r[6]) + '</td><td class="mono">' + esc(r[7]) + '</td></tr>';
+          return '<tr><td class="mono">' + mk(r[0]) + '</td><td class="typ">' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td>' + pill(r[3]) + '</td>' +
+            '<td class="num">' + D(r[4]) + '</td><td class="num">' + D(r[5]) + '</td><td class="mono">' + esc(r[6]) + '</td><td class="mono">' + mk(r[7]) + '</td></tr>';
         }).join('') + '</tbody>') +
       tf(1, s.rows.length, s.n)),
     panel('Impact Overview', '', '<div class="pb">' + metrics([['Total Hours', '831 Hrs', 'hrs'], ['Amount Saved', '$24,930', 'amt'], ['FTE Saved/week', "14 FTE's", 'fte'], ['Win Rate', '25.75%', 'win']]) + '</div>') +
@@ -540,7 +549,7 @@ function pPrice() {
     '<div class="pb" style="padding-bottom:0">' + seg('price', [['Approved', 8], ['Denied', 3], ['Pending', 2], ['All', 13]]) + '</div>' +
     tw('<thead>' + th(['Dispute ID', 'Dispute Type', 'Dispute Date', 'Dispute Status', 'Dispute Amount', 'Approved Amount (As Per Vc)'], [4, 5]) + '</thead><tbody>' +
       s.rows.map(function (r) {
-        return '<tr><td class="mono">' + esc(r[0]) + '</td><td class="typ">' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td>' + pill(r[3]) + '</td>' +
+        return '<tr><td class="mono">' + mk(r[0]) + '</td><td class="typ">' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td>' + pill(r[3]) + '</td>' +
           '<td class="num">' + D(r[4]) + '</td><td class="num">' + D(r[5]) + '</td></tr>';
       }).join('') + '</tbody>') +
     tf(1, s.rows.length, s.n));
@@ -549,9 +558,9 @@ function pPrice() {
 /* ---- Ops Chargeback ---- */
 function pOps() {
   return strip([
-    {k:'Total Disputed', v:D(472.95)}, {k:'Total Approved', v:D(472.95), c:'g'},
-    {k:'Total Denied', v:'<span style="font-size:14px;color:var(--amber)">In Progress…</span>'},
-    {k:'Win Rate', v:'100.00%', c:'g'}
+    {k:'Total Disputed', v:D(4424.54)}, {k:'Total Approved', v:D(2471.92), c:'g'},
+    {k:'Total Pending', v:D(1340.22), c:'a'}, {k:'Total Denied', v:D(612.40), c:'r'},
+    {k:'Win Rate', v:'80.14%', c:'g'}
   ]) +
   '<div class="grid2">' +
   panel('Infraction Split', '<select class="sel"><option>January</option><option>February</option></select><select class="sel"><option>2026</option><option>2025</option></select>',
@@ -575,7 +584,7 @@ function pOps() {
     tw('<thead>' + th(['ASIN', 'Issue Type', 'SubIssue Type', 'Units', FILT.opsmode, 'Disputed', 'Recovered', 'Status'], [3, 4, 5, 6]) + '</thead><tbody>' +
       ASIN.map(function (r) {
         var unit = FILT.opsmode === 'Infraction (Units)';
-        return '<tr><td class="mono">' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td class="num">' + N(r[3]) + '</td>' +
+        return '<tr><td class="mono">' + mk(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td class="num">' + N(r[3]) + '</td>' +
           '<td class="num">' + (unit ? N(r[3]) : D(r[4])) + '</td><td class="num">' + D(r[5]) + '</td><td class="num">' + D(r[6]) + '</td><td>' + pill(r[7]) + '</td></tr>';
       }).join('') + '</tbody>') +
     tf(1, 5, 5));
@@ -593,7 +602,7 @@ function pMissed() {
       '<tr><td class="mono">TS00000017_04425</td><td>04/01/2025 - 12/31/2025</td><td style="text-align:center">' + A_DL + '</td><td class="num">' + D(35579.56) + '</td>' +
       '<td><span class="toggle"><i></i></span></td><td>-</td><td class="num">-</td><td>-</td><td>-</td><td class="mono">-</td><td class="num">-</td><td class="num">-</td><td>-</td><td>' + pill('Creating Invoice') + '</td></tr>' +
       '<tr><td class="mono">TS00000016_04318</td><td>01/01/2025 - 03/31/2025</td><td style="text-align:center">' + A_DL + '</td><td class="num">' + D(18204.11) + '</td>' +
-      '<td><span class="toggle on"><i></i></span></td><td>08/19/26</td><td class="num">' + D(18204.11) + '</td><td style="text-align:center">' + A_DL + '</td><td>09/30/26</td><td class="mono">368114027</td><td class="num">' + D(18204.11) + '</td><td class="num">100.00%</td><td>09/28/26</td><td>' + pill('Paid') + '</td></tr>' +
+      '<td><span class="toggle on"><i></i></span></td><td>08/19/26</td><td class="num">' + D(18204.11) + '</td><td style="text-align:center">' + A_DL + '</td><td>09/30/26</td><td class="mono">3681***027</td><td class="num">' + D(18204.11) + '</td><td class="num">100.00%</td><td>09/28/26</td><td>' + pill('Paid') + '</td></tr>' +
       '<tr><td class="mono">TS00000015_04201</td><td>10/01/2024 - 12/31/2024</td><td style="text-align:center">' + A_DL + '</td><td class="num">' + D(42870.33) + '</td>' +
       '<td><span class="toggle on"><i></i></span></td><td>06/04/26</td><td class="num">' + D(42870.33) + '</td><td style="text-align:center">' + A_DL + '</td><td>-</td><td class="mono">-</td><td class="num">' + D(0) + '</td><td class="num">0.00%</td><td>07/19/26</td><td>' + pill('Overdue') + '</td></tr>' +
       '</tbody>') +
@@ -632,7 +641,7 @@ function pCoop() {
     panel('Jobs in Progress', BIMP + BEXP,
       tw('<thead>' + th(['Vendor Name', 'Date', 'Type', 'Agreement Id', 'Stage', 'Pending Task', 'Progress', 'Action']) + '</thead><tbody>' +
         LIVE.jobs.map(function (j, i) {
-          return '<tr><td>US - Rebelution US</td><td>' + esc(j[0]) + '</td><td class="typ">' + esc(j[1]) + '</td><td>-</td><td>-</td><td>-</td><td>' + pill('Completed') + '</td>' +
+          return '<tr><td>Demo Account 1</td><td>' + esc(j[0]) + '</td><td class="typ">' + esc(j[1]) + '</td><td>-</td><td>-</td><td>-</td><td>' + pill('Completed') + '</td>' +
             actions('jobs', i, 'job', 'Total Shortage Line Items : ' + N(242133 - i * 4817)) + '</tr>';
         }).join('') + '</tbody>') +
       tf(LIVE.jobs.length ? 1 : 0, LIVE.jobs.length, LIVE.jobs.length + 9)),
@@ -645,7 +654,7 @@ function pCoopD() {
   return panel('Dispute Table', BEXP,
     tw('<thead>' + th(['Dispute ID', 'Amount', 'Refund', 'Created By', 'Create Date', 'Resolve Date', 'Reason', 'TAT', 'Status', 'Action'], [1, 2]) + '</thead><tbody>' +
       (LIVE.coopd.length ? LIVE.coopd.map(function (r, i) {
-        return '<tr><td class="mono">' + esc(r[0]) + '</td><td class="num">' + D(r[1]) + '</td><td class="num">' + D(r[2]) + '</td>' +
+        return '<tr><td class="mono">' + mk(r[0]) + '</td><td class="num">' + D(r[1]) + '</td><td class="num">' + D(r[2]) + '</td>' +
           '<td>' + esc(r[3]) + '</td><td>' + esc(r[4]) + '</td><td>' + esc(r[5]) + '</td><td class="typ">' + esc(r[6]) + '</td><td class="num">' + esc(r[7]) + '</td>' +
           '<td>' + pill(r[8]) + '</td>' + actions('coopd', i, 'edit') + '</tr>';
       }).join('') : '<tr><td colspan="10">' + empty('No data Available — refresh to restore') + '</td></tr>') + '</tbody>') +
@@ -658,7 +667,7 @@ function pResult() {
       ub = RESULT.reduce(function (a, r) { return a + r[3]; }, 0),
       no = RESULT.reduce(function (a, r) { return a + r[4]; }, 0);
   return panel('Result Summary', ftoggle('res') + '<button class="btn s">Export Report ' + A_DL + '</button>',
-    fpanel('res', [{l:'Search Agreement ID', p:'Search Agreement ID'}, {l:'Amazon VC Account', o:['US - Rebelution US', 'US - Vantio']}],
+    fpanel('res', [{l:'Search Agreement ID', p:'Search Agreement ID'}, {l:'Amazon VC Account', o:['Demo Account 1', 'Demo Account 2']}],
       '<button class="btn p">Search</button><button class="btn">Reset</button>') +
     tw('<thead><tr><th style="width:26px"><input type="checkbox" aria-label="Select all"></th>' +
       ['Agreement ID', 'Total Billed Amount', 'Overbilled Amount', 'Underbilled Amount', 'Net Off', 'Dispute Percentage', 'Prior Adjustment', 'Recovered Amount']
@@ -728,7 +737,7 @@ function pDispute() {
     fpanel('md', [{l:'Search DisputeID', p:'Search DisputeID'},
       {l:'Reason List *', o:['Reason List *', 'Shipment Disparity', 'Duplicate Freight', 'Duplicate Billing', 'Non Compliant Fee']},
       {l:'Start Date', p:'mm/dd/yyyy'}, {l:'End Date', p:'mm/dd/yyyy'},
-      {l:'Amazon VC Account', o:['Amazon VC Account', 'US - Rebelution US', 'US - Vantio']}],
+      {l:'Amazon VC Account', o:['Amazon VC Account', 'Demo Account 1', 'Demo Account 2']}],
       '<button class="btn p">Search</button><button class="btn">Reset</button><button class="btn s">Upload Remittance</button>') +
     '<div class="pb" style="padding-bottom:0">' + seg('dispute', ['Resolved', 'Pending With Amazon', 'Pending Vendor Action', 'All']) + '</div>' +
     tw('<thead><tr><th style="width:26px"><input type="checkbox" aria-label="Select all"></th>' +
@@ -738,7 +747,7 @@ function pDispute() {
       ['Win Rate', 'Created By', 'Created Date', 'Resolved Date', 'Reason', 'TAT', 'Status'].map(function (c) { return '<th>' + c + '</th>'; }).join('') +
       '</tr></thead><tbody>' +
       DISPUTES.map(function (r) {
-        return '<tr><td><input type="checkbox" aria-label="Select row"></td><td>' + esc(r[0]) + '</td><td class="mono">' + esc(r[1]) + '</td>' +
+        return '<tr><td><input type="checkbox" aria-label="Select row"></td><td>' + esc(r[0]) + '</td><td class="mono">' + mk(r[1]) + '</td>' +
           '<td class="num">' + D(r[2]) + '</td><td class="num">' + (r[3] ? D(r[3]) : '-') + '</td><td class="num">' + esc(r[4]) + '</td><td>' + esc(r[5]) + '</td>' +
           '<td>' + esc(r[6]) + '</td><td>' + esc(r[7]) + '</td><td class="typ">' + esc(r[8]) + '</td><td class="num">' + esc(r[9]) + '</td><td>' + pill(r[10]) + '</td></tr>';
       }).join('') + '</tbody>') +
@@ -748,7 +757,7 @@ function pDispute() {
 function pOnboard() {
   var rows = ONB[FILT.onboard] || [];
   return panel('Manage Onboard Tracker', ftoggle('ob') + '<button class="btn s">Bulk Upload</button>' + BEXP,
-    fpanel('ob', [{l:'Amazon VC Account', o:['Amazon VC Account', 'US - Rebelution US', 'US - Vantio', 'US - TrailKit']}],
+    fpanel('ob', [{l:'Amazon VC Account', o:['Amazon VC Account', 'Demo Account 1', 'Demo Account 2', 'Demo Account 8']}],
       '<button class="btn p">Search</button><button class="btn">Reset</button>') +
     '<div class="pb" style="padding-bottom:0">' + seg('onboard', ['Onboarded In Last 30 Days', 'Job Submitted In Last 90 Days', 'Contract Details Not Updated', 'Contract Details Updated']) + '</div>' +
     (rows.length
@@ -903,7 +912,7 @@ function openModal(kind) {
     mTitle.textContent = 'Findings Upload Logs';
     mBody.innerHTML = '<div class="fpanel" style="border-bottom:1px solid var(--line)">' +
       '<div class="fld"><label>Reason</label><select><option>Select Reason</option><option>Shortage</option><option>Price Claim</option></select></div>' +
-      '<div class="fld"><label>Amazon VC Account</label><select><option>Select Account</option><option>US - Rebelution US</option></select></div>' +
+      '<div class="fld"><label>Amazon VC Account</label><select><option>Select Account</option><option>Demo Account 1</option></select></div>' +
       '<div class="fact"><button class="btn p">Search</button><button class="btn">Reset</button></div></div>' +
       empty('No data Available') +
       '<div class="sf"><button class="btn p" data-close="1">Close</button></div>';
@@ -911,14 +920,14 @@ function openModal(kind) {
   if (kind === 'signals') {
     mTitle.textContent = 'Access Signals';
     mBody.innerHTML = '<div style="padding:4px 0">' +
-      ['US - Rebelution US', 'US - Vantio', 'US - PureStride', 'US - NordFlask'].map(function (v, i) {
+      ['Demo Account 1', 'Demo Account 2', 'Demo Account 3', 'Demo Account 4'].map(function (v, i) {
         return '<div class="yoy"><span>' + esc(v) + '</span>' + pill(i === 3 ? 'Pending' : 'Active') + '</div>';
       }).join('') + '</div><div class="sf"><button class="btn p" data-close="1">Close</button></div>';
   }
   if (kind === 'nojobs') {
     mTitle.textContent = 'Jobs Not Submitted from Last 90 Days';
     mBody.innerHTML = '<div style="padding:4px 0">' +
-      [['US - TrailKit', '112 days'], ['US - ZenithPet', '96 days']].map(function (r) {
+      [['Demo Account 8', '112 days'], ['Demo Account 6', '96 days']].map(function (r) {
         return '<div class="yoy"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>';
       }).join('') + '</div><div class="sf"><button class="btn p" data-close="1">Close</button></div>';
   }
