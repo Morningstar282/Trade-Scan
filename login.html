@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in — TradeScan</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B4F8F'/%3E%3Cpath d='M7 21l5-7 4 3 8-10' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  body{display:grid;place-items:center;min-height:100vh;padding:24px}
+  .auth{width:min(880px,100%);display:grid;grid-template-columns:1fr 1fr;background:var(--surface);
+        border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-2);overflow:hidden}
+  .pitch{background:linear-gradient(155deg,var(--brand),#06355f);color:#fff;padding:36px 34px;display:flex;flex-direction:column;gap:22px}
+  .pitch .mk{display:flex;align-items:center;gap:11px}
+  .pitch .mk b{font-size:19px;letter-spacing:-.025em}
+  .pitch .mk small{display:block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.65;font-weight:600;margin-top:-1px}
+  .pitch h2{font-size:21px;line-height:1.3;font-weight:600;letter-spacing:-.02em}
+  .pitch p{margin:0;font-size:13px;line-height:1.6;opacity:.82}
+  .pitch ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:12.5px}
+  .pitch li{display:flex;gap:9px;align-items:flex-start;opacity:.9}
+  .pitch li svg{flex:none;margin-top:2px;opacity:.75}
+  .pitch .ft{margin-top:auto;font-size:10.5px;letter-spacing:.05em;opacity:.55}
+  .form{padding:36px 34px;display:flex;flex-direction:column;gap:16px;justify-content:center}
+  .form h1{font-size:20px}
+  .form .lede{font-size:12.5px;color:var(--ink-3);margin-top:-8px}
+  .form label{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600;display:block;margin-bottom:5px}
+  .form input[type=text],.form input[type=password]{width:100%;border:1px solid var(--line);background:var(--surface-2);
+        border-radius:var(--r-sm);padding:10px 12px;font:inherit;font-size:13.5px;color:var(--ink)}
+  .form input:focus{background:var(--surface)}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:var(--ink-2)}
+  .row a{text-decoration:none}
+  .submit{width:100%;justify-content:center;padding:11px;font-size:13.5px;font-weight:600;border-radius:var(--r-sm);margin-top:2px}
+  .err{display:none;font-size:12px;color:var(--crit);background:var(--crit-bg);border-radius:var(--r-sm);padding:8px 11px}
+  .err.on{display:block}
+  .creds{font-family:var(--m);font-size:11.5px}
+  @media (max-width:760px){ .auth{grid-template-columns:1fr} .pitch{display:none} .form{padding:30px 24px} }
+</style>
+</head>
+<body>
+<main class="auth">
+
+  <section class="pitch">
+    <div class="mk">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="rgba(255,255,255,.16)"/>
+        <path d="M7 21l5-7 4 3 8-10" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div><b>TradeScan</b><small>Recovery Portal</small></div>
+    </div>
+    <h2>Recover what Amazon owes you — invoice by invoice.</h2>
+    <p>Shortage claims, price claims, chargebacks, coop overbilling and missed invoicing, tracked end to end in one place.</p>
+    <ul>
+      <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m3.6 8.4 2.6 2.6 6.2-6.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Automated dispute creation and re-dispute tracking</li>
+      <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m3.6 8.4 2.6 2.6 6.2-6.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Agreement-level coop reconciliation</li>
+      <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="m3.6 8.4 2.6 2.6 6.2-6.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>P&amp;L view of every deduction line</li>
+    </ul>
+    <div class="ft">V-2.0.5 · Demo build</div>
+  </section>
+
+  <form class="form" id="f" autocomplete="off">
+    <h1>Sign in</h1>
+    <div class="lede">Use the demo credentials below — they are filled in for you.</div>
+
+    <div class="err" id="err">Those credentials don't match the demo account.</div>
+
+    <div>
+      <label for="u">Email</label>
+      <input type="text" id="u" name="demo-user" value="demo@tradescan.io" autocomplete="off" spellcheck="false">
+    </div>
+    <div>
+      <label for="p">Password</label>
+      <input type="password" id="p" name="demo-pass" value="tradescan" autocomplete="new-password">
+    </div>
+
+    <div class="row">
+      <span><span class="toggle on" id="rm"><i></i></span> &nbsp;Keep me signed in</span>
+      <a href="#" class="xl" id="fp">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="btn p submit">Sign in</button>
+
+    <div class="note" style="margin-top:4px">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style="flex:none;margin-top:1px"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v3.8M8 5.2v.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div><b>Demo sign-in.</b> This is a front-end demonstration with no server and no user accounts. The check runs
+      in your browser and nothing you type is sent anywhere or stored. Don't enter a real password.
+      Demo account: <span class="creds">demo@tradescan.io / tradescan</span></div>
+    </div>
+  </form>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var USER = 'demo@tradescan.io', PASS = 'tradescan';
+  var f = document.getElementById('f'), err = document.getElementById('err');
+  document.getElementById('rm').addEventListener('click', function () { this.classList.toggle('on'); });
+  document.getElementById('fp').addEventListener('click', function (e) {
+    e.preventDefault();
+    err.textContent = 'This demo has no account recovery — use demo@tradescan.io / tradescan.';
+    err.classList.add('on');
+  });
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var u = document.getElementById('u').value.trim().toLowerCase();
+    var p = document.getElementById('p').value;
+    if (u === USER && p === PASS) {
+      try { sessionStorage.setItem('ts-demo-session', '1'); } catch (x) {}
+      location.replace('index.html');
+    } else {
+      err.textContent = "Those credentials don't match the demo account.";
+      err.classList.add('on');
+    }
+  });
+})();
+</script>
+</body>
+</html>

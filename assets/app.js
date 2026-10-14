@@ -952,6 +952,11 @@ tb.addEventListener('click', function () {
   try { localStorage.setItem('ts-theme', next); } catch (err) {}
 });
 
+document.getElementById('signout').addEventListener('click', function () {
+  try { sessionStorage.removeItem('ts-demo-session'); } catch (err) {}
+  location.replace('login.html');
+});
+
 window.addEventListener('hashchange', function () {
   var s = location.hash.replace('#', '');
   if (B[s] && s !== current) render(s);

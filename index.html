@@ -11,6 +11,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css">
+<script>
+/* Demo gate. Front-end only — there is no server and no real account.
+   Keeps the pitch flow (sign in → portal) intact; it is not a security control. */
+(function () {
+  var ok = false;
+  try { ok = sessionStorage.getItem('ts-demo-session') === '1'; } catch (e) { ok = true; }
+  if (!ok) location.replace('login.html');
+})();
+</script>
 </head>
 <body>
 <div class="app">
@@ -53,6 +62,9 @@
           <i>3</i>
         </button>
         <div class="avatar">RB</div>
+        <button class="bell" id="signout" aria-label="Sign out" title="Sign out">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M12 6V4.6A1.6 1.6 0 0 0 10.4 3H5.6A1.6 1.6 0 0 0 4 4.6v10.8A1.6 1.6 0 0 0 5.6 17h4.8a1.6 1.6 0 0 0 1.6-1.6V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9 10h8m0 0-2.6-2.6M17 10l-2.6 2.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>
     </header>
 
