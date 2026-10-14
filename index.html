@@ -57,10 +57,13 @@
         <button class="bell" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode">
           <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M16 11.2A6.4 6.4 0 0 1 8.8 4a6.6 6.6 0 1 0 7.2 7.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
         </button>
-        <button class="bell" aria-label="Notifications">
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 3a4.4 4.4 0 0 1 4.4 4.4c0 3.1 1.1 4.2 1.1 4.2H4.5s1.1-1.1 1.1-4.2A4.4 4.4 0 0 1 10 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.3 14.2a1.8 1.8 0 0 0 3.4 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          <i>3</i>
-        </button>
+        <div class="nwrap">
+          <button class="bell" id="bell" aria-label="Notifications" aria-expanded="false">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M10 3a4.4 4.4 0 0 1 4.4 4.4c0 3.1 1.1 4.2 1.1 4.2H4.5s1.1-1.1 1.1-4.2A4.4 4.4 0 0 1 10 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.3 14.2a1.8 1.8 0 0 0 3.4 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <i id="bellCount">3</i>
+          </button>
+          <div class="notif" id="notif" hidden></div>
+        </div>
         <div class="avatar">RB</div>
         <button class="bell" id="signout" aria-label="Sign out" title="Sign out">
           <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M12 6V4.6A1.6 1.6 0 0 0 10.4 3H5.6A1.6 1.6 0 0 0 4 4.6v10.8A1.6 1.6 0 0 0 5.6 17h4.8a1.6 1.6 0 0 0 1.6-1.6V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9 10h8m0 0-2.6-2.6M17 10l-2.6 2.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>

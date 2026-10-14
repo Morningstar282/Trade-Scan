@@ -72,6 +72,29 @@ img{max-width:100%}
 .phead{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 24px 13px}
 .phead .crumbs{font-size:11.5px;color:var(--ink-3);margin-bottom:3px}
 .phead .crumbs b{color:var(--ink-2);font-weight:500}
+.crumbs button{background:none;border:0;padding:0;font:inherit;color:var(--ink-3);cursor:pointer}
+.crumbs button:hover{color:var(--accent);text-decoration:underline}
+.crumbs .sep{opacity:.45;margin:0 2px}
+
+/* notifications dropdown */
+.nwrap{position:relative}
+.notif{position:absolute;right:0;top:calc(100% + 9px);width:min(330px,calc(100vw - 32px));background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-2);z-index:60;overflow:hidden}
+.notif[hidden]{display:none!important}
+.nhead{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.nhead h3{font-size:12.5px}
+.nhead .c{margin-left:auto;font-size:10.5px;color:var(--ink-3)}
+.nlist{max-height:330px;overflow-y:auto}
+.nitem{display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line-2);align-items:flex-start;text-align:left;
+  width:100%;background:none;border-left:0;border-right:0;border-top:0;cursor:pointer;color:inherit;font:inherit}
+.nitem:last-child{border-bottom:0}
+.nitem:hover{background:var(--surface-2)}
+.nitem .dotm{margin-top:5px}
+.nitem .t{display:block;font-size:12.5px;font-weight:600;line-height:1.35}
+.nitem .m{display:block;font-size:11px;color:var(--ink-3);margin-top:2px;line-height:1.4}
+.nitem.read .t{font-weight:500;color:var(--ink-2)}
+.nfoot{padding:9px 14px;border-top:1px solid var(--line);background:var(--surface-2);display:flex;gap:12px;align-items:center;font-size:11.5px}
+.nfoot .spacer{flex:1}
 .prow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .prow h1{font-size:19px}
 .spacer{flex:1}

@@ -18,7 +18,9 @@
     # Demo site — keep it out of search results.
     X-Robots-Tag = "noindex, nofollow"
 
+# Demo site under active iteration: always revalidate, so a push shows up on
+# the next reload instead of being masked by a cached styles.css / app.js.
 [[headers]]
   for = "/assets/*"
   [headers.values]
-    Cache-Control = "public, max-age=3600"
+    Cache-Control = "public, max-age=0, must-revalidate"

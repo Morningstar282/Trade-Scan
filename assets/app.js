@@ -241,9 +241,38 @@ var TITLE = {dashboard:'Dashboard',ongoing:'On Going Shortage Claim Dispute',bul
  ops:'Operational Chargeback',missed:'Missed Invoicing',coop:'Excess Coop Billing',pnl:'P&L Analysis',
  dispute:'Manage Dispute',onboard:'Manage Onboard Tracker',customer:'Customer Dashboard',
  coopd:'Manage Dispute',result:'Result Summary',downloads:'Download Manager',access:'Manage Clients'};
-var CRUMB = {dashboard:'Dashboard',ongoing:'On Going Shortage',dispute:'Manage Dispute',onboard:'Manage Onboard Tracker',
- coopd:'Excess Coop Biiling / Manage Dispute', /* production spells it this way */
- result:'Excess Coop Biiling / Result Summary'};
+/* Breadcrumb trail per page: [label, pageId or null when it's the current page].
+   "Excess Coop Biiling" is production's spelling — kept deliberately. */
+var CRUMB = {
+ dashboard:[],
+ ongoing:[['On Going Shortage', null]],
+ bulk:[['Bulk Period Shortage', null]],
+ price:[['Price Claim', null]],
+ ops:[['Operational Chargeback', null]],
+ missed:[['Missed Invoicing', null]],
+ coop:[['Excess Coop Billing', null]],
+ pnl:[['P&L Analysis', null]],
+ dispute:[['Manage Dispute', null]],
+ onboard:[['Manage Onboard Tracker', null]],
+ customer:[['Customer Dashboard', null]],
+ downloads:[['Download Manager', null]],
+ access:[['Manage Clients', null]],
+ coopd:[['Excess Coop Biiling', 'coop'], ['Manage Dispute', null]],
+ result:[['Excess Coop Biiling', 'coop'], ['Result Summary', null]]
+};
+
+var NOTIF = [
+ {u:1, c:'var(--good)', t:'Shortage batch completed',
+  m:'Batch TS00000017_1783588475223 finished — 191 new disputes created.', g:'bulk', w:'12 min ago'},
+ {u:1, c:'var(--amber)', t:'29 disputes pending with Amazon',
+  m:'No response in over 14 days on $14,761.75 of itemized shortage claims.', g:'ongoing', w:'1 hr ago'},
+ {u:1, c:'var(--accent)', t:'Export ready',
+  m:'OnGoing_Shortage_Aug2026.xlsx is available in Download Manager.', g:'downloads', w:'3 hrs ago'},
+ {u:0, c:'var(--crit)', t:'Coop agreement overbilled',
+  m:'Agreement 83322470 shows $478,779.64 overbilled — 62.00% disputed.', g:'result', w:'Yesterday'},
+ {u:0, c:'var(--ink-3)', t:'Contract expiring in 60 days',
+  m:'US - TrailKit contract renewal is due. Review in Customer Dashboard.', g:'customer', w:'2 days ago'}
+];
 var NAVFOR = {coopd:'coop',result:'coop'};
 
 var FILT = {ongoing:'Approved',bulk:'Approved',price:'Approved',dispute:'Resolved',
@@ -574,7 +603,7 @@ function pMissed() {
 /* ---- Excess Coop Billing ---- */
 function pCoop() {
   return strip([
-    {k:'Finding Amount', v:D(7807.24), s:'<span class="xl" data-chart="1">12-month trend</span>'},
+    {k:'Finding Amount', v:D(7807.24), s:'Shipment Disparity, net of adjustments'},
     {k:'Yearly Trends', v:SD(-28049.86), c:'r', s:'2026 · <span class="xl" data-modal="yoy">View Details ›</span>'},
     {k:'Disputed Amount', v:D(296823.98), s:'<span class="xl" data-go="coopd">View Details ›</span>'},
     {k:'Recouped Amount', v:D(0), s:'Export Remittance available'}
@@ -820,9 +849,15 @@ function render(id) {
   if (!B[id]) id = 'dashboard';
   current = id;
   ptitle.textContent = TITLE[id];
-  var c = CRUMB[id] || TITLE[id];
-  crumbs.innerHTML = id === 'dashboard' ? '<b>Dashboard</b>'
-    : 'Dashboard <span style="opacity:.45">/</span> <b>' + esc(c).replace(/ \/ /g, ' <span style="opacity:.45">/</span> ') + '</b>';
+  var trail = CRUMB[id] || [[TITLE[id], null]];
+  var parts = [trail.length ? '<button data-go="dashboard">Dashboard</button>' : '<b>Dashboard</b>'];
+  trail.forEach(function (c, i) {
+    parts.push('<span class="sep">/</span>');
+    parts.push(c[1] && i < trail.length - 1
+      ? '<button data-go="' + c[1] + '">' + esc(c[0]) + '</button>'
+      : '<b>' + esc(c[0]) + '</b>');
+  });
+  crumbs.innerHTML = parts.join(' ');
   view.innerHTML = B[id]();
   draw(id);
   paintNav();
@@ -951,6 +986,52 @@ tb.addEventListener('click', function () {
   document.documentElement.setAttribute('data-theme', next);
   try { localStorage.setItem('ts-theme', next); } catch (err) {}
 });
+
+/* breadcrumb navigation */
+crumbs.addEventListener('click', function (e) {
+  var b = e.target.closest('button[data-go]');
+  if (b) render(b.getAttribute('data-go'));
+});
+
+/* notifications */
+var bell = document.getElementById('bell'), notif = document.getElementById('notif'), bellCount = document.getElementById('bellCount');
+function paintNotif() {
+  var unread = NOTIF.filter(function (n) { return n.u; }).length;
+  bellCount.textContent = unread;
+  bellCount.style.display = unread ? '' : 'none';
+  notif.innerHTML =
+    '<div class="nhead"><h3>Notifications</h3><span class="c">' + unread + ' unread</span></div>' +
+    '<div class="nlist">' + NOTIF.map(function (n, i) {
+      return '<button class="nitem' + (n.u ? '' : ' read') + '" data-n="' + i + '">' +
+        '<span class="dotm" style="background:' + (n.u ? n.c : 'var(--line)') + '"></span>' +
+        '<span style="min-width:0"><span class="t">' + esc(n.t) + '</span>' +
+        '<span class="m">' + esc(n.m) + '</span>' +
+        '<span class="m" style="opacity:.8">' + esc(n.w) + '</span></span></button>';
+    }).join('') + '</div>' +
+    '<div class="nfoot"><button class="btn" style="padding:4px 10px;font-size:11px" data-nread="1">Mark all read</button>' +
+    '<span class="spacer"></span><button class="btn" style="padding:4px 10px;font-size:11px" data-go="downloads">Download Manager ›</button></div>';
+}
+function closeNotif() { notif.hidden = true; bell.setAttribute('aria-expanded', 'false'); }
+bell.addEventListener('click', function (e) {
+  e.stopPropagation();
+  notif.hidden = !notif.hidden;
+  bell.setAttribute('aria-expanded', String(!notif.hidden));
+});
+notif.addEventListener('click', function (e) {
+  e.stopPropagation();
+  if (e.target.closest('[data-nread]')) { NOTIF.forEach(function (n) { n.u = 0; }); paintNotif(); return; }
+  var g = e.target.closest('[data-go]');
+  if (g) { closeNotif(); render(g.getAttribute('data-go')); return; }
+  var it = e.target.closest('[data-n]');
+  if (it) {
+    var n = NOTIF[parseInt(it.getAttribute('data-n'), 10)];
+    n.u = 0; paintNotif(); closeNotif();
+    if (n.g) render(n.g);
+  }
+});
+document.addEventListener('click', closeNotif);
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNotif(); });
+paintNotif();
 
 document.getElementById('signout').addEventListener('click', function () {
   try { sessionStorage.removeItem('ts-demo-session'); } catch (err) {}
