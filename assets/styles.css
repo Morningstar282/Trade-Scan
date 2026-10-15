@@ -50,6 +50,7 @@
 }
 
 *{box-sizing:border-box}
+html{scrollbar-gutter:stable}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.625;-webkit-font-smoothing:antialiased}
 h1,h2,h3{margin:0;font-family:var(--fh);font-weight:700;letter-spacing:-.01em;text-wrap:balance}
@@ -277,6 +278,23 @@ table.matrix tr.tot td{font-weight:700;background:var(--surface-2);border-top:1.
 .upd div{font-size:11.5px;color:var(--ink-2);line-height:1.5;padding-left:11px;border-left:2px solid var(--line)}
 .upd b{display:block;color:var(--brand);font-size:11.5px;margin-bottom:1px}
 .xl{color:var(--accent);text-decoration:underline;cursor:pointer}
+
+/* ---------- access forms (Client / User / Group) ---------- */
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px 20px}
+.form2 .wide{grid-column:1 / -1}
+@media (max-width:760px){.form2{grid-template-columns:1fr}}
+.form2 .fld input,.form2 .fld select{min-height:42px}
+.rgroup{display:flex;flex-direction:column;gap:6px}
+.rgroup .rl{font-size:12px;color:var(--ink-3);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.rgroup .ro{display:flex;gap:18px;align-items:center}
+.rgroup label{display:inline-flex;align-items:center;gap:7px;font-size:14px;cursor:pointer}
+.rgroup input{accent-color:var(--tp-blue);width:16px;height:16px}
+.fact2{display:flex;gap:10px;align-items:center;padding:0 20px 20px}
+.fact2 .spacer{flex:1}
+.pwwrap{position:relative}
+.pwwrap input{padding-right:40px!important}
+.pweye{position:absolute;right:5px;top:50%;transform:translateY(-50%);border:0;background:none;cursor:pointer;padding:7px;border-radius:var(--r-sm);color:var(--ink-3);line-height:0}
+.pweye:hover{color:var(--tp-blue);background:var(--soft)}
 
 /* ---------- dialog ---------- */
 .modal{position:fixed;inset:0;background:rgba(8,22,34,.48);display:grid;place-items:center;z-index:90;padding:16px}

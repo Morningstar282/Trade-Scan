@@ -248,7 +248,8 @@ var PAGES = [
 var TITLE = {dashboard:'Dashboard',ongoing:'On Going Shortage Claim Dispute',bulk:'Bulk Period Shortage',price:'Price Claim',
  ops:'Operational Chargeback',missed:'Missed Invoicing',coop:'Excess Coop Billing',pnl:'P&L Analysis',
  dispute:'Manage Dispute',onboard:'Manage Onboard Tracker',customer:'Customer Dashboard',
- coopd:'Manage Dispute',result:'Result Summary',downloads:'Download Manager',access:'Manage Clients'};
+ coopd:'Manage Dispute',result:'Result Summary',downloads:'Download Manager',access:'Manage Clients',
+ clientaccess:'Client Access',useraccess:'User Access',groupaccess:'Group Access'};
 /* Breadcrumb trail per page: [label, pageId or null when it's the current page].
    "Excess Coop Biiling" is production's spelling — kept deliberately. */
 var CRUMB = {
@@ -266,7 +267,10 @@ var CRUMB = {
  downloads:[['Download Manager', null]],
  access:[['Manage Clients', null]],
  coopd:[['Excess Coop Biiling', 'coop'], ['Manage Dispute', null]],
- result:[['Excess Coop Biiling', 'coop'], ['Result Summary', null]]
+ result:[['Excess Coop Biiling', 'coop'], ['Result Summary', null]],
+ clientaccess:[['Manage Access', 'access'], ['Client Access', null]],
+ useraccess:[['Manage Access', 'access'], ['User Access', null]],
+ groupaccess:[['Manage Access', 'access'], ['Group Access', null]]
 };
 
 var NOTIF = [
@@ -281,7 +285,7 @@ var NOTIF = [
  {u:0, c:'var(--ink-3)', t:'Contract expiring in 60 days',
   m:'Demo Account 8 contract renewal is due. Review in Customer Dashboard.', g:'customer', w:'2 days ago'}
 ];
-var NAVFOR = {coopd:'coop',result:'coop'};
+var NAVFOR = {coopd:'coop',result:'coop',clientaccess:'access',useraccess:'access',groupaccess:'access'};
 
 var FILT = {ongoing:'Approved',bulk:'Approved',price:'Approved',dispute:'Resolved',
  onboard:'Onboarded In Last 30 Days',coopsub:'Shipment Disparity',access:'Clients',opsmode:'Infraction ($)'};
@@ -523,7 +527,7 @@ function pOngoing() {
       {l:'Search Dispute ID', p:'Search Dispute ID'}, {l:'Invoice Number', p:'Search Invoice Number'},
       {l:'Dispute Type', o:['All', 'Shortage invoice', 'Shortage Invoice Re-Dispute']},
       {l:'Start Date', p:'mm/dd/yyyy'}, {l:'End Date', p:'mm/dd/yyyy'}
-    ], '<button class="btn p">Search</button><button class="btn">Reset</button>') +
+    ], '<button class="btn p" data-search="1">Search</button><button class="btn" data-reset="1">Reset</button>') +
     '<div class="pb" style="padding-bottom:0">' + seg('ongoing', [['Approved', 916], ['Denied', 1441], ['Pending with Amazon', 29], ['Upcoming', 582], ['All', 3651]]) + '</div>' +
     tw('<thead>' + th(s.cols, (s.money || []).concat(s.plain || [])) + '</thead><tbody>' + body + '</tbody>') +
     tf(1, s.rows.length, s.n)) +
@@ -578,7 +582,7 @@ function pPrice() {
   ]) +
   panel('Price Claim', ftoggle('pc') + BIMP + BEXP,
     fpanel('pc', [{l:'Search Dispute ID', p:'Search Dispute ID'}, {l:'Dispute Status', o:['All', 'Approved', 'Denied', 'Pending']},
-      {l:'Start Date', p:'mm/dd/yyyy'}, {l:'End Date', p:'mm/dd/yyyy'}], '<button class="btn p">Search</button><button class="btn">Reset</button>') +
+      {l:'Start Date', p:'mm/dd/yyyy'}, {l:'End Date', p:'mm/dd/yyyy'}], '<button class="btn p" data-search="1">Search</button><button class="btn" data-reset="1">Reset</button>') +
     '<div class="pb" style="padding-bottom:0">' + seg('price', [['Approved', 8], ['Denied', 3], ['Pending', 2], ['All', 13]]) + '</div>' +
     tw('<thead>' + th(['Dispute ID', 'Dispute Type', 'Dispute Date', 'Dispute Status', 'Dispute Amount', 'Approved Amount (As Per Vc)'], [4, 5]) + '</thead><tbody>' +
       s.rows.map(function (r) {
@@ -613,7 +617,7 @@ function pOps() {
       {l:'Status', o:['Select Status', 'Approved', 'Denied', 'Pending Amazon Action']},
       {l:'Issue Type', o:['Select Issue Type', 'In Full Delivery', 'On-time shipment', 'Receiving Accuracy']},
       {l:'SubIssue Type', o:['Select SubIssue Type', 'Shortage at receipt', 'Late carrier pickup', 'Carton count variance']}],
-      '<button class="btn p">Search</button><button class="btn">Reset</button>') +
+      '<button class="btn p" data-search="1">Search</button><button class="btn" data-reset="1">Reset</button>') +
     tw('<thead>' + th(['ASIN', 'Issue Type', 'SubIssue Type', 'Units', FILT.opsmode, 'Disputed', 'Recovered', 'Status'], [3, 4, 5, 6]) + '</thead><tbody>' +
       ASIN.map(function (r) {
         var unit = FILT.opsmode === 'Infraction (Units)';
@@ -630,7 +634,7 @@ function pMissed() {
     {k:'Recouped Amount', v:D(18204.11), c:'g'}, {k:'Recouped Rate', v:'51.17%'}
   ]) +
   panel('Missed Invoicing',
-    '<button class="btn p">Run Request</button><button class="btn" data-modal="upload">Findings Upload Logs</button><button class="btn s" data-track="1">Progress Tracker ›</button>',
+    '<button class="btn p" data-modal="newreq">New Request</button><button class="btn" data-modal="upload">Upload Logs</button><button class="btn s" data-modal="jobstatus">Job Status</button>',
     tw('<thead>' + th(['Batch Number', 'PO Period', 'Finding (Import / Export)', 'Finding Amount', 'Invoice Trigger', 'Invoice Creation Date', 'Invoiced Amount', 'Payment (Import/Export)', 'Payment Date', 'Payment Number', 'Payment Received', 'Recovery Rate', 'Expected Payment Due Date', 'Status'], [3, 6, 10, 11]) + '</thead><tbody>' +
       '<tr><td class="mono">TS00000017_04425</td><td>04/01/2025 - 12/31/2025</td><td style="text-align:center">' + A_DL + '</td><td class="num">' + D(35579.56) + '</td>' +
       '<td><span class="toggle"><i></i></span></td><td>-</td><td class="num">-</td><td>-</td><td>-</td><td class="mono">-</td><td class="num">-</td><td class="num">-</td><td>-</td><td>' + pill('Creating Invoice') + '</td></tr>' +
@@ -655,12 +659,12 @@ function pCoop() {
     '<div class="grid2">' +
     panel('Finding Amount', '<button class="btn" data-modal="yoy">YOY Split</button>', '<div class="pb"><div class="chart" id="cS"></div>' +
       kvs([['2026', SD(-28049.86)], ['2025', D(425897.41)], ['2024', SD(-390033.96)], ['2023', SD(-6.35)]]) + '</div>') +
-    panel('Recouped Amount', '<button class="btn">Export Remittance ' + A_DL + '</button>', '<div class="pb">' +
+    panel('Recouped Amount', '<button class="btn" data-say="Remittance export queued \u2014 collect it in Download Manager." >Export Remittance ' + A_DL + '</button>', '<div class="pb">' +
       '<div style="font-family:var(--fh);font-size:26px;font-weight:700">' + D(3617.50) + '</div>' +
       '<div style="font-size:14px;color:var(--ink-3);margin-top:4px">Across 6 refunded disputes.</div>' +
       kvs([['Disputed Amount', D(296823.98)], ['Prior Adjustment', D(1463.44)], ['Net Off', D(7807.24)]]) + '</div>') +
     '</div>' +
-    panel('Granular Analysis', '<button class="btn s">P.A Export</button>',
+    panel('Granular Analysis', '<button class="btn s" data-say="Prior-adjustment export queued \u2014 collect it in Download Manager.">P.A Export</button>',
       tw('<thead>' + th(['Sub-type', 'Findings', 'Prior Adjustments', 'Net Off'], [1, 2, 3]) + '</thead><tbody>' +
         COOP_SUB.map(function (r, i) {
           return '<tr><td' + (i === 0 ? ' style="color:var(--amber)"' : '') + '>' + esc(r[0]) + '</td><td class="num">' + D(r[1]) + '</td><td class="num">' + D(r[2]) + '</td><td class="num">' + D(r[3]) + '</td></tr>';
@@ -700,9 +704,9 @@ function pResult() {
       ob = RESULT.reduce(function (a, r) { return a + r[2]; }, 0),
       ub = RESULT.reduce(function (a, r) { return a + r[3]; }, 0),
       no = RESULT.reduce(function (a, r) { return a + r[4]; }, 0);
-  return panel('Result Summary', ftoggle('res') + '<button class="btn s">Export Report ' + A_DL + '</button>',
+  return panel('Result Summary', ftoggle('res') + '<button class="btn s" data-say="Result summary export queued \u2014 collect it in Download Manager.">Export Report ' + A_DL + '</button>',
     fpanel('res', [{l:'Search Agreement ID', p:'Search Agreement ID'}, {l:'Amazon VC Account', o:['Demo Account 1', 'Demo Account 2']}],
-      '<button class="btn p">Search</button><button class="btn">Reset</button>') +
+      '<button class="btn p" data-search="1">Search</button><button class="btn" data-reset="1">Reset</button>') +
     tw('<thead><tr><th style="width:26px"><input type="checkbox" aria-label="Select all"></th>' +
       ['Agreement ID', 'Total Billed Amount', 'Overbilled Amount', 'Underbilled Amount', 'Net Off', 'Dispute Percentage', 'Prior Adjustment', 'Recovered Amount']
         .map(function (c, i) { return '<th' + (i > 0 ? ' class="num"' : '') + '>' + c + '</th>'; }).join('') + '</tr></thead><tbody>' +
@@ -752,7 +756,7 @@ function pPnl() {
     '<div class="legend"><span><i class="sw" style="background:var(--accent)"></i>2026</span><span><i class="sw" style="background:var(--accent-3)"></i>2025</span><span><i class="sw" style="background:var(--accent-2)"></i>2024</span></div>', 'thousands') +
   panel('Top Deductions', '', '<div class="pb"><div id="cD"></div></div>', 'Jan – Jun 2026') +
   '</div>' +
-  panel('Yearly Comparison', BIMP + BEXP + '<button class="btn">Upload Logs ›</button>',
+  panel('Yearly Comparison', BIMP + BEXP + '<button class="btn" data-modal="upload">Upload Logs</button>',
     tw('<thead>' + th(['Categories', 'Jan - Jun 2026', '2025', '2024'], [1, 2, 3]) + '</thead><tbody>' +
       rows.map(function (r) {
         if (r[0] === 'sec') return '<tr class="sec"><td colspan="4">' + r[1] + '</td></tr>';
@@ -768,12 +772,12 @@ function pDispute() {
     {k:'Open Disputes', v:'4', c:'a'}, {k:'Average TAT', v:'3.6 days'},
     {k:'Win Rate', v:'50.00%', bar:50, s:'6 of 12 refunded'}
   ]) +
-  panel(FILT.dispute, ftoggle('md') + BIMP + BEXP + '<button class="btn">ReOpen</button>',
+  panel(FILT.dispute, ftoggle('md') + BIMP + BEXP + '<button class="btn" data-say="Select disputes to reopen, then confirm.">ReOpen</button>',
     fpanel('md', [{l:'Search DisputeID', p:'Search DisputeID'},
       {l:'Reason List *', o:['Reason List *', 'Shipment Disparity', 'Duplicate Freight', 'Duplicate Billing', 'Non Compliant Fee']},
       {l:'Start Date', p:'mm/dd/yyyy'}, {l:'End Date', p:'mm/dd/yyyy'},
       {l:'Amazon VC Account', o:['Amazon VC Account', 'Demo Account 1', 'Demo Account 2']}],
-      '<button class="btn p">Search</button><button class="btn">Reset</button><button class="btn s">Upload Remittance</button>') +
+      '<button class="btn p" data-search="1">Search</button><button class="btn" data-reset="1">Reset</button><button class="btn s" data-say="Remittance file uploads here in the live portal.">Upload Remittance</button>') +
     '<div class="pb" style="padding-bottom:0">' + seg('dispute', ['Resolved', 'Pending With Amazon', 'Pending Vendor Action', 'All']) + '</div>' +
     tw('<thead><tr><th style="width:26px"><input type="checkbox" aria-label="Select all"></th>' +
       ['Vendor Name', 'Dispute id'].map(function (c) { return '<th>' + c + '</th>'; }).join('') +
@@ -791,9 +795,9 @@ function pDispute() {
 
 function pOnboard() {
   var rows = ONB[FILT.onboard] || [];
-  return panel('Manage Onboard Tracker', ftoggle('ob') + '<button class="btn s">Bulk Upload</button>' + BEXP,
+  return panel('Manage Onboard Tracker', ftoggle('ob') + '<button class="btn s" data-say="Bulk onboarding sheet uploads here in the live portal.">Bulk Upload</button>' + BEXP,
     fpanel('ob', [{l:'Amazon VC Account', o:['Amazon VC Account', 'Demo Account 1', 'Demo Account 2', 'Demo Account 8']}],
-      '<button class="btn p">Search</button><button class="btn">Reset</button>') +
+      '<button class="btn p" data-search="1">Search</button><button class="btn" data-reset="1">Reset</button>') +
     '<div class="pb" style="padding-bottom:0">' + seg('onboard', ['Onboarded In Last 30 Days', 'Job Submitted In Last 90 Days', 'Contract Details Not Updated', 'Contract Details Updated']) + '</div>' +
     (rows.length
       ? tw('<thead>' + th(['VC Name', 'Organization Name', 'Amazon VC Account', 'Onboard Date', 'Has Contract', 'Status']) + '</thead><tbody>' +
@@ -811,7 +815,7 @@ function pCustomer() {
   panel('Customer Dashboard',
     '<button class="btn" data-modal="signals">Access Signals</button><button class="btn" data-modal="nojobs">Jobs Not Submitted from Last 90 Days</button>' + ftoggle('cd') + BEXP,
     fpanel('cd', [{l:'Country', o:['Select Country', 'US', 'UK', 'DE']}, {l:'Has Contract', o:['Has Contract', 'Yes', 'No']},
-      {l:'Referral Agency', o:['Select Referral Agency', 'Partner', 'Direct']}], '<button class="btn p">Search</button><button class="btn">Reset</button>') +
+      {l:'Referral Agency', o:['Select Referral Agency', 'Partner', 'Direct']}], '<button class="btn p" data-search="1">Search</button><button class="btn" data-reset="1">Reset</button>') +
     tw('<thead>' + th(['Sr No.', 'Country', 'Organization Name', 'VC Name', 'VC Access', 'Onboard Date', 'Tradeplace Fee', 'Payment Terms', 'Referral Agency Name', 'Referral Agency 1 Commission', 'Has Contract', 'Overbilling Recoupment', 'Overbilling Identified', 'Potential Recoup', 'Completion', 'Recovered', 'Pending With Amazon', 'Prior Adjusments', 'Denied Amount'], [0, 12, 13, 15, 16, 17, 18]) + '</thead><tbody>' +
       CUST.map(function (r) {
         function m(v) { return typeof v === 'number' ? D(v) : esc(v); }
@@ -824,12 +828,12 @@ function pCustomer() {
 }
 
 function pDownloads() {
-  return panel('Download Manager', '<button class="btn p">New Export</button>',
+  return panel('Download Manager', '<button class="btn p" data-say="Export queued \u2014 it will appear in this list when ready.">New Export</button>',
     tw('<thead>' + th(['Sl No', 'Vendor Name', 'Source Page', 'Sub Function', 'Requested Date', 'Status', 'Action'], [0]) + '</thead><tbody>' +
       DLMGR.map(function (r) {
         var ready = r[5] === 'Completed';
         return '<tr><td class="num">' + r[0] + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td>' + esc(r[3]) + '</td><td>' + esc(r[4]) + '</td>' +
-          '<td>' + pill(r[5]) + '</td><td>' + (ready ? '<button class="btn p" style="padding:3px 11px;border-radius:999px;font-size:11px">Download Now</button>' : '<span style="color:var(--ink-3)">—</span>') + '</td></tr>';
+          '<td>' + pill(r[5]) + '</td><td>' + (ready ? '<button class="btn p" style="padding:3px 11px;border-radius:999px;font-size:11px" data-say="Download started.">Download Now</button>' : '<span style="color:var(--ink-3)">—</span>') + '</td></tr>';
       }).join('') + '</tbody>') +
     tf(1, DLMGR.length, DLMGR.length));
 }
@@ -856,11 +860,74 @@ function pAccess() {
           '<td><div class="act"><button title="Edit" aria-label="Edit">' + A_EDIT + '</button></div></td></tr>';
       }).join('') + '</tbody>') + tf(1, CLIENTS.length, CLIENTS.length);
   }
-  var add = FILT.access === 'Users' ? 'Add Users' : FILT.access === 'Groups' ? 'Add Groups' : 'Add Clients';
-  return panel('Manage Clients', ftoggle('ac') + BEXP + '<button class="btn p">' + add + '</button>',
+  var add = FILT.access === 'Users' ? ['Add Users', 'useraccess'] : FILT.access === 'Groups' ? ['Add Groups', 'groupaccess'] : ['Add Clients', 'clientaccess'];
+  return panel('Manage ' + FILT.access, ftoggle('ac') + BEXP + '<button class="btn p" data-go="' + add[1] + '">' + add[0] + '</button>',
     fpanel('ac', [{l:'Search', p:'Search'}, {l:'Market Place', o:['Market Place', 'US', 'UK', 'DE', 'CA']}],
-      '<button class="btn p">Search</button><button class="btn">Reset</button>') +
+      '<button class="btn p" data-search="1">Search</button><button class="btn" data-reset="1">Reset</button>') +
     '<div class="pb" style="padding-bottom:0">' + tabs + '</div>' + body);
+}
+
+
+/* ===== Access forms =====
+   Production opens Add Clients / Add Users / Add Groups as their own pages
+   (/client-access, /user-access, /group-access), not dialogs. Mirrored here,
+   with the same section headings, field labels and required-field markers. */
+function fld(f) {
+  var id = 'f_' + f.l.replace(/[^a-z0-9]/gi, '');
+  var ctl;
+  if (f.t === 'select') ctl = '<select id="' + id + '">' + f.o.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join('') + '</select>';
+  else if (f.t === 'password') ctl = '<div class="pwwrap"><input type="password" id="' + id + '" autocomplete="new-password" placeholder="' + esc(f.l) + '">' +
+    '<button type="button" class="pweye" data-pw="' + id + '" aria-label="Show ' + esc(f.l) + '">' +
+    '<svg width="17" height="17" viewBox="0 0 20 20" fill="none"><path d="M2.2 10S5 4.8 10 4.8 17.8 10 17.8 10 15 15.2 10 15.2 2.2 10 2.2 10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.4" stroke="currentColor" stroke-width="1.4"/></svg></button></div>';
+  else ctl = '<input type="text" id="' + id + '" placeholder="' + esc(f.p || f.l) + '">';
+  return '<div class="fld' + (f.wide ? ' wide' : '') + '"><label for="' + id + '">' + esc(f.l) + '</label>' + ctl + '</div>';
+}
+function radios(label, opts, name) {
+  return '<div class="rgroup"><span class="rl">' + esc(label) + '</span><div class="ro">' + opts.map(function (o, i) {
+    return '<label><input type="radio" name="' + name + '"' + (i === 0 ? ' checked' : '') + '>' + esc(o) + '</label>';
+  }).join('') + '</div></div>';
+}
+var MKT = ['Market Place *', 'US', 'UK', 'DE', 'CA', 'FR', 'IT', 'ES'];
+var TERMS = ['Payment Term', 'Net 30', 'Net 45', 'Net 60', 'Net 90'];
+var ACCTS = ['Amazon VC Account *', 'Demo Account 1', 'Demo Account 2', 'Demo Account 3', 'Demo Account 4',
+             'Demo Account 5', 'Demo Account 6', 'Demo Account 7', 'Demo Account 8'];
+
+function pClientAccess() {
+  return panel('Client Access Details', '',
+    '<div class="form2">' +
+      fld({ l: 'Org Name *' }) + fld({ l: 'Amazon VC Account *' }) +
+      fld({ l: 'Market Place *', t: 'select', o: MKT, wide: true }) +
+      fld({ l: 'Contract Start Date', p: 'mm/dd/yyyy' }) + fld({ l: 'Contract End Date', p: 'mm/dd/yyyy' }) +
+      fld({ l: 'Customer Email', wide: true }) +
+      fld({ l: 'Fee Percent' }) + fld({ l: 'Payment Term', t: 'select', o: TERMS }) +
+      radios('Cron Job', ['Yes', 'No'], 'cron') + radios('Ops Chargeback', ['Yes', 'No'], 'opscb') +
+      radios('Itemized Shortage', ['Yes', 'No'], 'itsh') + radios('Itemized Price Claim', ['Yes', 'No'], 'itpc') +
+    '</div>' +
+    '<div class="fact2"><button class="btn" data-say="Reference rows are added here in the live portal.">Add References</button>' +
+    '<span class="spacer"></span><button class="btn p" data-submit="Client">Submit</button></div>');
+}
+function pUserAccess() {
+  return panel('User Access Details', '',
+    '<div class="form2">' +
+      fld({ l: 'First Name *' }) + fld({ l: 'Last Name *' }) +
+      fld({ l: 'Email *', wide: true }) +
+      fld({ l: 'Password *', t: 'password', wide: true }) +
+      fld({ l: 'Confirm Password *', t: 'password', wide: true }) +
+      fld({ l: 'Client Names *', t: 'select', o: ACCTS.slice(1).concat(['All clients']), wide: true }) +
+      '<div class="wide">' + radios('User Type', ['Internal', 'Customer', 'Agency'], 'utype') + '</div>' +
+    '</div>' +
+    '<div class="fact2"><span class="spacer"></span><button class="btn p" data-submit="User">Submit</button></div>');
+}
+function pGroupAccess() {
+  return panel('Group Access Details', '',
+    '<div class="form2">' +
+      fld({ l: 'Group Name *', wide: true }) +
+      fld({ l: 'Amazon VC Account *', t: 'select', o: ACCTS, wide: true }) +
+      fld({ l: 'Group Type', t: 'select', o: ['Group Type', 'Internal', 'Customer', 'Agency'], wide: true }) +
+      fld({ l: 'Module Access', t: 'select', o: ['Module Access', 'All modules (11)', 'Recovery modules only', 'Read only'], wide: true }) +
+      fld({ l: 'User Name', t: 'select', o: ['User Name', 'demo.admin@tradeplace.com', 'demo.ops@tradeplace.com', 'demo.analyst@tradeplace.com'], wide: true }) +
+    '</div>' +
+    '<div class="fact2"><span class="spacer"></span><button class="btn p" data-submit="Group">Submit</button></div>');
 }
 
 /* =========================================================================
@@ -873,7 +940,8 @@ var modal = document.getElementById('modal'), mBody = document.getElementById('m
 var toast = document.getElementById('toast'), toastMsg = document.getElementById('toastMsg'), tTimer;
 var current = 'dashboard';
 var B = {dashboard:pDashboard, ongoing:pOngoing, bulk:pBulk, price:pPrice, ops:pOps, missed:pMissed, coop:pCoop, pnl:pPnl,
- dispute:pDispute, onboard:pOnboard, customer:pCustomer, coopd:pCoopD, result:pResult, downloads:pDownloads, access:pAccess};
+ dispute:pDispute, onboard:pOnboard, customer:pCustomer, coopd:pCoopD, result:pResult, downloads:pDownloads, access:pAccess,
+ clientaccess:pClientAccess, useraccess:pUserAccess, groupaccess:pGroupAccess};
 
 function paintNav() {
   nav.innerHTML = PAGES.map(function (p) {
@@ -924,6 +992,46 @@ function draw(id) {
 }
 
 /* ---------- dialogs ---------- */
+
+/* Search / Reset actually filter the table they sit above: every non-empty
+   field in the panel has to match somewhere in the row. */
+function runFilter(btn, clear) {
+  var panelEl = btn.closest('.fpanel') || btn.closest('.panel');
+  var host = btn.closest('.panel') || view;
+  var table = host.querySelector('table');
+  if (!table) return;
+  var rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
+  var terms = [];
+  if (!clear && panelEl) {
+    Array.prototype.forEach.call(panelEl.querySelectorAll('input,select'), function (el) {
+      var v = (el.value || '').trim();
+      if (el.tagName === 'SELECT' && el.selectedIndex === 0) v = '';
+      if (v && !/^mm\/dd\/yyyy$/i.test(v)) terms.push(v.toLowerCase());
+    });
+  }
+  if (clear && panelEl) {
+    Array.prototype.forEach.call(panelEl.querySelectorAll('input'), function (el) { el.value = ''; });
+    Array.prototype.forEach.call(panelEl.querySelectorAll('select'), function (el) { el.selectedIndex = 0; });
+  }
+  var shown = 0;
+  rows.forEach(function (r) {
+    if (r.querySelector('.empty')) return;
+    var txt = r.textContent.toLowerCase();
+    var ok = terms.every(function (q) { return txt.indexOf(q) > -1; });
+    r.style.display = ok ? '' : 'none';
+    if (ok) shown++;
+  });
+  var note = table.parentNode.parentNode.querySelector('.filter-note');
+  if (note) note.remove();
+  if (!clear && terms.length) {
+    showToast(shown ? shown + ' of ' + rows.length + ' rows match.' : 'No rows match those filters.');
+  } else if (clear) {
+    showToast('Filters cleared.');
+  } else {
+    showToast('Enter a filter value first.');
+  }
+}
+
 function openModal(kind) {
   if (kind === 'yoy') {
     mTitle.textContent = 'YOY Split';
@@ -943,14 +1051,38 @@ function openModal(kind) {
       '<div class="hint" style="padding-top:10px">If End Date is blank, today’s date will be used.</div>' +
       '<div class="sf"><button class="btn s" data-close="1">Save</button><button class="btn p" data-close="1">Close</button></div>';
   }
+  if (kind === 'newreq') {
+    /* Production: PO Start Date / PO End Date, with Run disabled until both are set. */
+    mTitle.textContent = 'New Request';
+    mBody.innerHTML = '<div style="display:flex;gap:10px;padding:14px 16px 0">' +
+      '<div class="fld" style="flex:1"><label>PO Start Date</label><input type="text" placeholder="mm/dd/yyyy"></div>' +
+      '<div class="fld" style="flex:1"><label>PO End Date</label><input type="text" placeholder="mm/dd/yyyy"></div></div>' +
+      '<div class="hint" style="padding-top:10px">The audit runs across every invoice in the selected PO period.</div>' +
+      '<div class="sf"><button class="btn s" data-say="Audit queued. Follow it under Job Status.">Run</button>' +
+      '<button class="btn p" data-close="1">Close</button></div>';
+  }
+  if (kind === 'jobstatus') {
+    mTitle.textContent = 'Job Status';
+    mBody.innerHTML = '<div class="tw"><table><thead>' +
+      th(['Batch Number', 'PO Period', 'Requested', 'Status']) + '</thead><tbody>' +
+      [['TS00000017_04425', '04/01/2025 - 12/31/2025', '10/13/26 09:12', 'Creating Invoice'],
+       ['TS00000016_04318', '01/01/2025 - 03/31/2025', '08/19/26 11:04', 'Completed'],
+       ['TS00000015_04201', '10/01/2024 - 12/31/2024', '06/04/26 16:38', 'Completed']
+      ].map(function (r) {
+        return '<tr><td class="mono">' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td>' + pill(r[3]) + '</td></tr>';
+      }).join('') + '</tbody></table></div>' +
+      '<div class="sf"><button class="btn p" data-close="1">Close</button></div>';
+  }
   if (kind === 'upload') {
-    mTitle.textContent = 'Findings Upload Logs';
+    mTitle.textContent = 'Upload Logs';
     mBody.innerHTML = '<div class="fpanel" style="border-bottom:1px solid var(--line)">' +
       '<div class="fld"><label>Reason</label><select><option>Select Reason</option><option>Shortage</option><option>Price Claim</option></select></div>' +
       '<div class="fld"><label>Amazon VC Account</label><select><option>Select Account</option><option>Demo Account 1</option></select></div>' +
-      '<div class="fact"><button class="btn p">Search</button><button class="btn">Reset</button></div></div>' +
+      '<div class="fact"><button class="btn p" data-say="No upload logs match that filter.">Search</button>' +
+      '<button class="btn" data-say="Filters cleared.">Reset</button></div></div>' +
       empty('No data Available') +
-      '<div class="sf"><button class="btn p" data-close="1">Close</button></div>';
+      '<div class="sf"><button class="btn" data-say="File picker opens here in the live portal.">Choose file</button>' +
+      '<span class="spacer"></span><button class="btn p" data-close="1">Close</button></div>';
   }
   if (kind === 'signals') {
     mTitle.textContent = 'Access Signals';
@@ -1001,6 +1133,20 @@ view.addEventListener('click', function (e) {
     return;
   }
   var m = e.target.closest('[data-modal]'); if (m) { openModal(m.getAttribute('data-modal')); return; }
+  var sr = e.target.closest('[data-search]');
+  if (sr) { runFilter(sr, false); return; }
+  var rs = e.target.closest('[data-reset]');
+  if (rs) { runFilter(rs, true); return; }
+  var say = e.target.closest('[data-say]');
+  if (say) { showToast(say.getAttribute('data-say')); return; }
+  var sub = e.target.closest('[data-submit]');
+  if (sub) { showToast(sub.getAttribute('data-submit') + ' submitted \u2014 demo build, nothing was saved.'); render('access'); return; }
+  var pw = e.target.closest('[data-pw]');
+  if (pw) {
+    var inp = document.getElementById(pw.getAttribute('data-pw'));
+    if (inp) { inp.type = inp.type === 'password' ? 'text' : 'password'; inp.focus(); }
+    return;
+  }
   if (e.target.closest('[data-track]')) { showToast('File Download Requested Successfully, Please Check In Download Manager'); return; }
   var g = e.target.closest('[data-go]'); if (g) { render(g.getAttribute('data-go')); return; }
   var d = e.target.closest('button[data-del]');
