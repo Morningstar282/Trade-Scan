@@ -454,6 +454,23 @@ function donut(el, p, sub) {
 /* =========================================================================
    PAGES
    ========================================================================= */
+
+/* A dashboard module card: accent pixel + title, one hero figure, a rate bar,
+   then the supporting rows. */
+function modcard(o) {
+  return '<section class="panel mcard">' +
+    '<div class="mh"><span class="px" style="background:' + (o.px || 'var(--tp-blue)') + '"></span>' +
+    '<h2>' + esc(o.t) + '</h2><div class="spacer"></div>' +
+    '<button class="btn" data-go="' + o.go + '">Open \u203a</button></div>' +
+    '<div class="mb">' +
+      '<div><div class="hk">' + esc(o.hk) + '</div><div class="hv' + (o.hg ? ' g' : '') + '">' + o.hv + '</div></div>' +
+      (o.rate ? '<div class="mrate"><div class="mt2"><div class="mf2" style="width:' +
+        Math.max(0, Math.min(100, o.rate[0])).toFixed(1) + '%"></div></div>' +
+        '<div class="ml"><span>' + esc(o.rate[1]) + '</span><b>' + esc(o.rate[2]) + '</b></div></div>' : '') +
+      '<div class="mrows">' + kvs(o.rows) + '</div>' +
+    '</div></section>';
+}
+
 function pDashboard() {
   return strip([
     {k:'Shortage Findings', v:D(2206208.70), s:'Win rate 25.75%'},
@@ -470,24 +487,36 @@ function pDashboard() {
       '<div><b>Need Help?</b>Our team is here to support you. For any questions, reach out directly to your Account Manager.</div>' +
       '</div></div>') +
     '<div class="grid2">' +
-      panel('Shortage Claim', '<button class="btn" data-go="ongoing">Open ›</button>', '<div class="pb">' + kvs([
-        ['Findings', D(2206208.70)], ['Dispute Amount', D(1383851.58)], ['Approved Amount', D(356315.60)],
-        ['Out Of Scope', D(138620.27)], ['Total Pending', D(43549.35)], ['Win Rate', '25.75%']]) + '</div>') +
-      panel('Price Claim', '<button class="btn" data-go="price">Open ›</button>', '<div class="pb"><div class="chart" id="dP"></div>' +
-        kvs([['Disputed', D(342.06)], ['Approved', D(342.06)], ['Pending', D(0)], ['Approved Rate', '100.00%']]) + '</div>') +
-      panel('Operational Chargeback', '<button class="btn" data-go="ops">Open ›</button>', '<div class="pb">' + kvs([
-        ['In Full Delivery', D(63238.80), 'amber'], ['On-time shipment', D(63139.54), 'amber'],
-        ['Receiving Accuracy', D(7711.93), 'amber'], ['Disputed', D(4424.54)], ['Approved', D(2471.92)],
-        ['Denied', D(612.40)], ['Win Rate', '80.14%']]) + '</div>') +
-      panel('Missed Invoicing', '<button class="btn" data-go="missed">Open ›</button>', '<div class="pb">' + kvs([
-        ['Shipped but not invoiced', D(35579.56)], ['Claim Submitted', D(18204.11)],
-        ['Recouped Amount', D(18204.11)], ['Recouped Rate', '51.17%']]) + '</div>') +
-      panel('Excess Coop', '<button class="btn" data-go="coop">Open ›</button>', '<div class="pb">' + kvs([
-        ['Win Rate', '50.0%'], ['Findings', D(7807.24)], ['Disputed', D(296823.98)], ['Recouped', D(3617.50)],
-        ['Yearly 2026', SD(-28049.86)], ['Yearly 2025', D(425897.41)], ['Yearly 2024', SD(-390033.96)]]) + '</div>') +
-      panel('P&L Analysis', '<button class="btn" data-go="pnl">Open ›</button>', '<div class="pb">' + kvs([
-        ['EBITDA %', '8.77%'], ['EBITDA $', D(442037.98)], ['CoOp', D(1807977.38)], ['AMS', '-'],
-        ['Ops Chargeback', D(67370.09)], ['PO Acceptance Rate', '94.2%']]) + '</div>') +
+      modcard({ t:'Shortage Claim', go:'ongoing', px:'var(--tp-blue)',
+        hk:'Approved Amount', hv:D(356315.60), hg:true,
+        rate:[25.75, 'Win rate', '25.75%'],
+        rows:[['Findings', D(2206208.70)], ['Dispute Amount', D(1383851.58)],
+              ['Out Of Scope', D(138620.27)], ['Total Pending', D(43549.35)]] }) +
+      modcard({ t:'Price Claim', go:'price', px:'var(--tp-blue)',
+        hk:'Approved Amount', hv:D(342.06), hg:true,
+        rate:[100, 'Approved rate', '100.00%'],
+        rows:[['Disputed', D(342.06)], ['Pending', D(0)], ['Denied', D(122.50)]] }) +
+      modcard({ t:'Operational Chargeback', go:'ops', px:'var(--tp-yellow)',
+        hk:'Approved Amount', hv:D(2471.92), hg:true,
+        rate:[80.14, 'Win rate', '80.14%'],
+        rows:[['Disputed', D(4424.54)], ['Denied', D(612.40)],
+              ['In Full Delivery', D(63238.80)], ['On-time shipment', D(63139.54)],
+              ['Receiving Accuracy', D(7711.93)]] }) +
+      modcard({ t:'Missed Invoicing', go:'missed', px:'var(--tp-yellow)',
+        hk:'Recouped Amount', hv:D(18204.11), hg:true,
+        rate:[51.17, 'Recouped rate', '51.17%'],
+        rows:[['Shipped but not invoiced', D(35579.56)], ['Claim Submitted', D(18204.11)]] }) +
+      modcard({ t:'Excess Coop', go:'coop', px:'var(--tp-green)',
+        hk:'Recouped Amount', hv:D(3617.50), hg:true,
+        rate:[50, 'Win rate', '50.0%'],
+        rows:[['Findings', D(7807.24)], ['Disputed', D(296823.98)],
+              ['Yearly 2026', SD(-28049.86)], ['Yearly 2025', D(425897.41)],
+              ['Yearly 2024', SD(-390033.96)]] }) +
+      modcard({ t:'P&L Analysis', go:'pnl', px:'var(--tp-green)',
+        hk:'EBITDA', hv:D(442037.98), hg:true,
+        rate:[8.77, 'EBITDA margin', '8.77%'],
+        rows:[['CoOp', D(1807977.38)], ['Ops Chargeback', D(67370.09)],
+              ['PO Acceptance Rate', '94.2%'], ['AMS', '-']] }) +
     '</div>',
     /* sticky context column */
     panel('Account', '', '<div class="pb">' +
@@ -979,7 +1008,6 @@ function render(id) {
 }
 function draw(id) {
   var $ = function (s) { return document.getElementById(s); };
-  if (id === 'dashboard') donut($('dP'), 100, 'Approved');
   if (id === 'coop') {
     spark($('cS'), SPARK);
     winbars($('cW'), ['Shipment Disparity', 'Duplicate Freight', 'Non-compliant Freight', 'Duplicate Billing', 'Non Compliant Fee']);
