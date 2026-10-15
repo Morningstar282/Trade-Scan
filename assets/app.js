@@ -248,7 +248,7 @@ var PAGES = [
 var TITLE = {dashboard:'Dashboard',ongoing:'On Going Shortage Claim Dispute',bulk:'Bulk Period Shortage',price:'Price Claim',
  ops:'Operational Chargeback',missed:'Missed Invoicing',coop:'Excess Coop Billing',pnl:'P&L Analysis',
  dispute:'Manage Dispute',onboard:'Manage Onboard Tracker',customer:'Customer Dashboard',
- coopd:'Manage Dispute',result:'Result Summary',downloads:'Download Manager',access:'Manage Clients',
+ coopd:'Manage Dispute',result:'Result Summary',downloads:'Download Manager',access:'Manage Access',
  clientaccess:'Client Access',useraccess:'User Access',groupaccess:'Group Access'};
 /* Breadcrumb trail per page: [label, pageId or null when it's the current page].
    "Excess Coop Biiling" is production's spelling — kept deliberately. */
@@ -265,7 +265,7 @@ var CRUMB = {
  onboard:[['Manage Onboard Tracker', null]],
  customer:[['Customer Dashboard', null]],
  downloads:[['Download Manager', null]],
- access:[['Manage Clients', null]],
+ access:[['Manage Access', null]],
  coopd:[['Excess Coop Biiling', 'coop'], ['Manage Dispute', null]],
  result:[['Excess Coop Biiling', 'coop'], ['Result Summary', null]],
  clientaccess:[['Manage Access', 'access'], ['Client Access', null]],
@@ -1006,8 +1006,22 @@ function render(id) {
   closeRail();
   if (location.hash.replace('#', '') !== id) history.replaceState(null, '', '#' + id);
 }
+/* Keep every column header on the same side as the cells beneath it.
+   Doing it after render means a new table can't drift out of alignment. */
+function syncHeaderAlign() {
+  Array.prototype.forEach.call(view.querySelectorAll('table'), function (t) {
+    var first = t.querySelector('tbody tr');
+    if (!first) return;
+    Array.prototype.forEach.call(t.querySelectorAll('thead th'), function (th, i) {
+      var td = first.cells[i];
+      if (td && getComputedStyle(td).textAlign === 'right') th.style.textAlign = 'right';
+      else if (td && getComputedStyle(td).textAlign === 'center') th.style.textAlign = 'center';
+    });
+  });
+}
 function draw(id) {
   var $ = function (s) { return document.getElementById(s); };
+  syncHeaderAlign();
   if (id === 'coop') {
     spark($('cS'), SPARK);
     winbars($('cW'), ['Shipment Disparity', 'Duplicate Freight', 'Non-compliant Freight', 'Duplicate Billing', 'Non Compliant Fee']);
